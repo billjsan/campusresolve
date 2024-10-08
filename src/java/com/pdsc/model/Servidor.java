@@ -11,95 +11,92 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import javax.validation.constraints.Pattern;
 
-/**
- * Entidade Servidor.
- */
+
 @Entity
 public class Servidor {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private int id;
-  
-  @NotBlank(message = "Matrícula não pode estar em branco.")
-  @Size(min = 4, max = 10, message = "A matrícula deve ter entre 4 e 10 caracteres.")
-  private String matricula;
-  
-  @NotBlank(message = "Nome não pode estar em branco.")
-  @Size(min = 2, max = 50, message = "O nome deve ter entre 2 e 50 caracteres.")
-  private String nome;
-  
-  @NotBlank(message = "Cargo não pode estar em branco.")
-  @Size(min = 2, max = 30, message = "O cargo deve ter entre 2 e 30 caracteres.")
-  private String cargo;
-  
-  @NotBlank(message = "Setor não pode estar em branco.")
-  @Size(min = 2, max = 30, message = "O setor deve ter entre 2 e 30 caracteres.")
-  private String setor;
-  
-  @NotBlank(message = "Senha não pode estar em branco.")
-  @Size(min = 6, max = 20, message = "A senha deve ter entre 6 e 20 caracteres.")
-  @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,20}$", 
-           message = "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.")
-  private String senha;
-  
-  @OneToMany(mappedBy = "Servidor", cascade = CascadeType.ALL)
-  private List<Denuncia> denuncias;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int id;
 
-  // Getters e Setters
-  public int getId() {
-      return id;
-  }
+    @NotBlank(message = "Matrícula não pode estar em branco.")
+    @Size(min = 4, max = 10, message = "A matrícula deve ter entre 4 e 10 caracteres.")
+    private String matricula;
 
-  public void setId(int id) {
-      this.id = id;
-  }
+    @NotBlank(message = "Nome não pode estar em branco.")
+    @Size(min = 2, max = 50, message = "O nome deve ter entre 2 e 50 caracteres.")
+    private String nome;
 
-  public String getMatricula() {
-      return matricula;
-  }
+    @NotBlank(message = "Cargo não pode estar em branco.")
+    @Size(min = 2, max = 30, message = "O cargo deve ter entre 2 e 30 caracteres.")
+    private String cargo;
 
-  public void setMatricula(String matricula) {
-      this.matricula = matricula;
-  }
+    @NotBlank(message = "Setor não pode estar em branco.")
+    @Size(min = 2, max = 30, message = "O setor deve ter entre 2 e 30 caracteres.")
+    private String setor;
 
-  public String getNome() {
-      return nome;
-  }
+    @NotBlank(message = "Senha não pode estar em branco.")
+    @Size(min = 6, max = 20, message = "A senha deve ter entre 6 e 20 caracteres.")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{6,20}$", 
+             message = "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.")
+    private String senha;
 
-  public void setNome(String nome) {
-      this.nome = nome;
-  }
+    @OneToMany(mappedBy = "Servidor", cascade = CascadeType.ALL)
+    private List<Denuncia> denuncias;
 
-  public String getCargo() {
-      return cargo;
-  }
+    public int getId() {
+        return id;
+    }
 
-  public void setCargo(String cargo) {
-      this.cargo = cargo;
-  }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-  public String getSetor() {
-      return setor;
-  }
+    public String getMatricula() {
+        return matricula;
+    }
 
-  public void setSetor(String setor) {
-      this.setor = setor;
-  }
+    public void setMatricula(String matricula) {
+        this.matricula = matricula;
+    }
 
-  public String getSenha() {
-      return senha;
-  }
+    public String getNome() {
+        return nome;
+    }
 
-  public void setSenha(String senha) {
-      this.senha = senha;
-  }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-  public List<Denuncia> getDenuncias() {
-      return denuncias;
-  }
+    public String getCargo() {
+        return cargo;
+    }
 
-  public void setDenuncias(List<Denuncia> denuncias) {
-      this.denuncias = denuncias;
-  }
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public String getSetor() {
+        return setor;
+    }
+
+    public void setSetor(String setor) {
+        this.setor = setor;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+
+    public List<Denuncia> getDenuncias() {
+        return denuncias;
+    }
+
+    public void setDenuncias(List<Denuncia> denuncias) {
+        this.denuncias = denuncias;
+    }
 }

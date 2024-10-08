@@ -11,38 +11,44 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-/**
- *
- * @author PDSC
- */
 
 @SuppressWarnings("SerializableClass")
 @Entity
 public class Denuncia {
     
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private int id;
-  @Size(min = 2, max = 50)
-  private String setorDenuncia;
-   @Size(min = 2, max = 50)
-  private String tipoDenuncia;
-   @Size(min = 2, max = 100)
-  private String assundoDenuncia;
-  @Temporal(TemporalType.DATE)
-  private Date dataDenuncia;
-  @Size(min = 2, max = 100)
-  private String localDenuncia;
-   @Size(min = 5)
-  private String descricaoDenuncia;
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date dataCriacao;
-  @Pattern(regexp = "[N|P|E|R|A]", message = "Estado da denúncia inválido")
-  private String estadoDenuncia; /* novo N | processando P | encaminhado E | resolvido R | arquivado A */
-  @ManyToOne
-  private Servidor servidor;
-  @ManyToOne
-  private Usuario usuario;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int id;
+
+    @Size(min = 2, max = 50)
+    private String setorDenuncia;
+
+    @Size(min = 2, max = 50)
+    private String tipoDenuncia;
+
+    @Size(min = 2, max = 100)
+    private String assundoDenuncia;
+
+    @Temporal(TemporalType.DATE)
+    private Date dataDenuncia;
+
+    @Size(min = 2, max = 100)
+    private String localDenuncia;
+
+    @Size(min = 5)
+    private String descricaoDenuncia;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCriacao;
+
+    @Pattern(regexp = "[N|P|E|R|A]", message = "Estado da denúncia inválido")
+    private String estadoDenuncia; /* novo N | processando P | encaminhado E | resolvido R | arquivado A */
+
+    @ManyToOne
+    private Servidor servidor;
+
+    @ManyToOne
+    private Usuario usuario;
 
     public int getId() {
         return id;
