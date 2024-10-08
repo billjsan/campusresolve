@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <title>Painel Principal</title>
+    </h:head>
+    <h:body>
+        <b:growl id="growMenu" delay="4000" show-detail="true" show-summary="true"/>
+        <b:form id="formMenu">
+
+            <b:navBar brand="Campus Resolve" brandHref="indexUsuario.xhtml" fluid="true">
+                <b:navbarLinks>
+                    <b:navLink value="Nova Manifestação" href="#" onclick="$('.mRegistrarDenuncia').modal('show')"></b:navLink>   
+                </b:navbarLinks>
+                <b:navbarLinks pull="right">
+                    <b:navLink value="" iconAwesome="fa-power-off" onclick="location.href = 'login.xhtml';ajax:loginController.logout()"></b:navLink>  
+                </b:navbarLinks>
+            </b:navBar>
+            <b:panelGrid colSpans="2,10">
+                <b:panel style="height: 280px; text-align: center;" title="Bem-Vindo" collapsible="false">
+
+                    <b:row style="text-align: center;"> <h:graphicImage value="resources/icone-de-perfil2.png" style="width: 100px; height: 100px; margin-right: 5px; " /></b:row>
+                    <f:facet name="footer">
+                        <b:label value="Matrícula: " style="font-weight: bold; margin-right: 3px;" />
+                        <b:row style="margin: 3px;">               
+                            <h:outputText value=" #{loginController.usuarioLogado.matricula} " style="margin-right: 3px" />
+                        </b:row>
+                        <b:label value="Nome " style="font-weight: bold; margin-right: 3px;" />
+                        <b:row style="margin: 3px;">               
+                            <h:outputText value=" #{loginController.usuarioLogado.nome} " style="margin-right: 3px" />
+                        </b:row>
+                    </f:facet>
+                </b:panel>
+                <b:panel style="background-color: #98ff98;" title="Denúncias" collapsible="false">
+                    <b:panelGrid columns="4">
+                        <c:forEach items="#{denunciaController.listarDenuncias(loginController.usuarioLogado)}" var="denuncia">
+                            <b:panel collapsible="false" style="align-content: center; align-items: center; margin: 10px; max-width: 300px; word-wrap: break-word;">
+                                <f:facet name="heading">
+                                    <b:row style="margin: 3px;">
+
+                                        <h:outputText value=" #{denuncia.tipoDenuncia} " style="margin-right: 3px"  />
+                                    </b:row>
+                                </f:facet>
+
+                                <b:row style="margin: 3px;">
+                                    <b:label value="Assunto: "   style="margin-right: 3px" />
+                                    <h:outputText value="#{denuncia.assundoDenuncia}" />
+                                </b:row>
+
+                                <b:row style="margin: 3px;">
+                                    <b:label value="Descrição"  style="margin-right: 3px" />
+                                    <h:outputText value="#{denuncia.descricaoDenuncia}" />                  
+                                </b:row>
+                                <b:row style="margin: 3px;">
+                                    <b:label value="Local: "  style="margin-right: 3px" />
+                                    <h:outputText value=" #{denuncia.localDenuncia} " />
+                                </b:row>
+                                <f:facet name="footer">
+
+                                    <b:row style="margin: 3px;">
+                                        <h:outputText value="#{denunciaController.formatarData(denuncia.dataDenuncia)}" />
+                                    </b:row>
+                                </f:facet>
+                            </b:panel>
+
+                        </c:forEach>
+                    </b:panelGrid>
+                </b:panel>
+            </b:panelGrid>
+        </b:form>
+        <b:form id="formRegistrarDenuncia">
+            <b:modal id="modalRegistrarDenuncia" class="mRegistrarDenuncia">
+                <b:panelGrid columns="1">
+                    <b:selectOneMenu style="border: 1px solid; border-color: black" value="#{denunciaController.denuncia.tipoDenuncia}" label="Qual o Tipo de Manifestação?" required="true" 
+                                     select2="true">
+                        <f:selectItem itemLabel="(Selecione um Tipo)" itemValue="" />
+                        <f:selectItem itemLabel="Elogio" itemValue="Elogio" />
+                        <f:selectItem itemLabel="Reclamação" itemValue="Reclamação" />
+                        <f:selectItem itemLabel="Solicitação" itemValue="Solicitação" />
+                        <f:selectItem itemLabel="Sugestão" itemValue="Sugestão" />
+                        <f:selectItem itemLabel="Denuncia" itemValue="Denuncia" />
+                    </b:selectOneMenu>
+                    <b:selectOneMenu value="#{denunciaController.denuncia.assundoDenuncia}" label="Qual o Assunto?" required="true"
+                                     select2="true">
+                        <f:selectItem itemLabel="(Selecione um Assunto)" itemValue="" />
+                        <f:selectItem itemLabel="Assedio" itemValue="Assedio" />
+                        <f:selectItem itemLabel="Agradecimento" itemValue="Agradecimento" />
+                        <f:selectItem itemLabel="Alimentação" itemValue="Alimentação" />
+                        <f:selectItem itemLabel="Bolsas" itemValue="Bolsas" />
+                        <f:selectItem itemLabel="Conduta Docente" itemValue="Conduta Docente" />
+                        <f:selectItem itemLabel="Cursos" itemValue="Cursos" />
+                        <f:selectItem itemLabel="Descriminação" itemValue="Descriminação" />
+                        <f:selectItem itemLabel="Outro" itemValue="Outro" />
+                    </b:selectOneMenu>
+                    <b:inputTextarea label="Descrição" required="true" rows="4" maxlength="250" value="#{denunciaController.denuncia.descricaoDenuncia}" />                    
+                    <b:inputText placeholder="Local do fato" required="true" maxlength="50" label="Local do fato" value="#{denunciaController.denuncia.localDenuncia}"  />
+                    <b:dateTimePicker value="#{denunciaController.denuncia.dataDenuncia}"
+                                      label="Data/Hora"
+                                      mode="popup"
+                                      required="true"
+                                      format="DD/MM/YYYY HH:mm" 
+                                      locale="pt" />
+
+                    <b:commandButton value="Registrar" action="#{denunciaController.inserirDenuncia()}" />
+                </b:panelGrid>
+            </b:modal>
+        </b:form>
+    </h:body>
+</html>

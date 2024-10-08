@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://xmlns.jcp.org/jsf/html"
+      xmlns:b="http://bootsfaces.net/ui"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <h:head>
+        <h:outputStylesheet name="css/estilo.css" />
+    </h:head>
+    <h:body>
+        <b:growl id="growMenu" delay="4000" show-detail="true" show-summary="true"/>
+        <b:form id="formMenu">
+            <b:navBar brand="Campus Resolve" brandHref="indexServidor.xhtml" fluid="true">
+                <b:navbarLinks pull="right">
+                    <b:navLink value="" iconAwesome="fa-power-off" 
+                               onclick="location.href = 'login.xhtml';ajax:loginController.logout()">
+                    </b:navLink>
+                </b:navbarLinks>
+            </b:navBar>
+            <b:panelGrid colSpans="2,10">
+                <b:panel style="height: 280px; text-align: center;" title="Bem-Vindo" collapsible="false">
+
+                    <b:row style="text-align: center;"> <h:graphicImage value="resources/icone-de-perfil2.png" style="width: 100px; height: 100px; margin-right: 5px; " /></b:row>
+                    <f:facet name="footer">
+                        <b:label value="Matrícula: " style="font-weight: bold; margin-right: 3px;" />
+                        <b:row style="margin: 3px;">               
+                            <h:outputText value=" #{loginController.servidorLogado.matricula} " style="margin-right: 3px" />
+                        </b:row>
+                        <b:label value="Nome " style="font-weight: bold; margin-right: 3px;" />
+                        <b:row style="margin: 3px;">               
+                            <h:outputText value=" #{loginController.servidorLogado.nome} " style="margin-right: 3px" />
+                        </b:row>
+                    </f:facet>
+                </b:panel>
+                <b:panel   collapsible="false">
+                    <h:panelGroup style="border-bottom: 1px solid #ccc; margin: 10px 0;">
+                        <!-- Dashboard com os círculos para cada tipo de denúncia -->
+                        <b:container fluid="true">
+                            <b:row styleClass="placeholders">
+                                <!-- Círculo Elogio -->
+                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="3" styleClass="circle-number" style="background-color: #BAE1FF;"/>
+                                    <h:outputText value="Elogio" styleClass="h4"/>
+                                </b:column>
+
+                                <!-- Círculo Sugestão -->
+                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="5" styleClass="circle-number" style="background-color: #BAFFC9;"/>
+                                    <h:outputText value="Sugestão" styleClass="h4" />
+                                </b:column>
+
+                                <!-- Círculo Solicitação -->
+                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="2" styleClass="circle-number" style="background-color: #FFFFBA;" />
+                                    <h:outputText value="Solicitação" styleClass="h4" />
+                                </b:column>
+
+
+
+                                <!-- Círculo Reclamação -->
+                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="7" styleClass="circle-number" style="background-color: #FFDFBA;"/>
+                                    <h:outputText value="Reclamação" styleClass="h4" />
+                                </b:column>
+
+                                <!-- Círculo Denuncia -->
+                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="5" styleClass="circle-number" style="background-color: #FFB3BA;"/>
+                                    <h:outputText value="Denúncia" styleClass="h4" />
+                                </b:column>
+                            </b:row>
+                        </b:container>
+
+                        <!-- Título da Seção para Listagem de Denúncias -->
+
+
+                    </h:panelGroup>
+
+                    <b:row styleClass="table-responsive" >
+                        <h:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenunciasNovas()}" var="denuncia" rows="15">
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="ID" /></f:facet>
+                                <h:outputText value=" #{denuncia.id} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Tipo" /></f:facet>
+                                <h:outputText value=" #{denuncia.tipoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Assunto" /></f:facet>
+                                <h:outputText value=" #{denuncia.assundoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Descrição" /></f:facet>
+                                <h:outputText value=" #{denuncia.descricaoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Local" /></f:facet>
+                                <h:outputText value=" #{denuncia.localDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Status" /></f:facet>
+                                <h:outputText value=" #{denuncia.estadoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Data/Hora" /></f:facet>
+                                <h:outputText value=" #{denunciaController.formatarData(denuncia.dataDenuncia)} " />
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Ação" /></f:facet>
+                                <b:button value="Em Andamento" styleClass="btn-primary" 
+                                          style="padding: 5px 10px; font-size: 10px;"/>
+                                <b:button value="Finalizado" styleClass="btn-success" 
+                                         style="padding: 5px 10px; font-size: 10px;" />
+                            </h:column>
+                        </h:dataTable>
+                    </b:row>
+                </b:panel>
+            </b:panelGrid>
+        </b:form>
+    </h:body>
+</html>

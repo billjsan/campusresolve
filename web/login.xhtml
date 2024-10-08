@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:b="http://bootsfaces.net/ui">
+  <h:head>
+    <title>Login</title>
+  </h:head>
+  <h:body>
+    <b:growl id="gro" show-summary="true" show-detail="true" delay="4000"/>
+    
+    <p:dialog id="dialLogin" draggable="false" closable="false" 
+              closeOnEscape="false" resizable="false" modal="false"
+              visible="true">
+        
+      <b:tabView active-index="0" pills="true" contentStyle="border: 1px solid #ddd;padding:10px" style-class="tabview">
+        <b:tab title="Servidor" >
+          <b:form>
+            <b:panelGrid columns="2">
+              <h:outputText value="Matricula:"/>
+              <b:inputText value="#{matricula}"/>
+              <h:outputText value="Senha:"/>
+              <b:inputSecret value="#{senha}"/>
+            </b:panelGrid>
+            <b:commandButton value="Login" look="success" 
+                             action="#{loginController.loginServidor(matricula, senha)}"/><br/>
+            <h:outputText value="Não é registrado?"/>
+            <b:button look="info" value="Registre-se" onclick="$('.mRegistroServidor').modal('show')"/>
+          </b:form>
+        </b:tab>
+        <b:tab title="Usuario">
+          <b:form>
+            <b:panelGrid columns="2">
+              <h:outputText value="Matricula:"/>
+              <b:inputText value="#{matricula}"/>
+              <h:outputText value="Senha:"/>
+              <b:inputSecret value="#{senha}"/>
+            </b:panelGrid>
+            <b:commandButton value="Login" look="success" 
+                             action="#{loginController.loginUsuario(matricula, senha)}"/><br/>
+            <h:outputText value="Não é registrado?"/>
+            <b:button look="info" value="Registre-se" onclick="$('.mRegistroUsuario').modal('show')"/>
+          </b:form>
+        </b:tab>
+      </b:tabView>
+        
+    </p:dialog>
+    
+    <b:form id="formRegistroServidor">
+      <b:modal id="modalRegistroServidor" class="mRegistroServidor">
+        <b:panelGrid columns="2">
+
+          <h:outputText value="Matricula"/>
+          <b:inputText value="#{servidorController.servidorCadastro.matricula}"/>
+            
+          <h:outputText value="Nome"/>
+          <b:inputText value="#{servidorController.servidorCadastro.nome}"/>
+
+          <h:outputText value="Cargo:"/>
+          <b:inputText value="#{servidorController.servidorCadastro.cargo}"/>
+          
+          <h:outputText value="Setor:"/>
+          <b:inputText value="#{servidorController.servidorCadastro.setor}"/>
+
+          <h:outputText value="Senha:"/>
+          <b:inputSecret value="#{servidorController.servidorCadastro.senha}"/>
+
+          <h:outputText value="Confirma:"/>
+          <b:inputSecret value="#{confirma}"/>
+
+          <b:commandButton value="Cadastrar" action="#{servidorController.inserir(confirma)}"/>
+        </b:panelGrid>
+      </b:modal>
+    </b:form>
+    
+    <b:form id="formRegistroUsuario">
+      <b:modal id="modalRegistroUsuario" class="mRegistroUsuario">
+        <b:panelGrid columns="2">
+            
+          <h:outputText value="Matricula:"/>
+          <b:inputText value="#{usuarioController.usuarioCadastro.matricula}"/>
+
+          <h:outputText value="Nome"/>
+          <b:inputText value="#{usuarioController.usuarioCadastro.nome}"/>
+
+          <h:outputText value="Senha:"/>
+          <b:inputSecret value="#{usuarioController.usuarioCadastro.senha}"/>
+
+          <h:outputText value="Confirma:"/>
+          <b:inputSecret value="#{confirma}"/>
+
+          <b:commandButton value="Cadastrar" action="#{usuarioController.inserir(confirma)}"/>
+        </b:panelGrid>
+      </b:modal>
+    </b:form>
+    
+  </h:body>
+</html>
