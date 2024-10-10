@@ -2,6 +2,8 @@ package com.pdsc.controller;
 
 import com.pdsc.model.Servidor;
 import com.pdsc.model.Usuario;
+import com.pdsc.util.Logging;
+import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -9,13 +11,14 @@ import javax.faces.context.FacesContext;
 
 /**
  *
- * @author PDSC
+ * @author Willian Santos
  */
 
 @ManagedBean
 @SessionScoped
-public class LoginController extends Controller {
+public class LoginController extends Controller implements Serializable{
     
+    private static final String TAG = LoginController.class.getSimpleName();
     private Usuario usuarioLogado;
     private Servidor servidorLogado;
 
@@ -41,30 +44,30 @@ public class LoginController extends Controller {
                             Servidor.class).get(0);                        
             return "indexServidor";
         } catch (Exception e) {            
-//            e.printStackTrace();
-// usar lib de log para tratar   log4j
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Erro ao Logar","Matricula e/ou senha estão incorretos"));
+            Logging.d(TAG, e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,"Erro ao Logar","Matricula e/ou senha estão incorretos"));
             return null;
         }
     }
     
     public String loginUsuario(String matricula, String senha) {
+        Logging.d(TAG, "loginUsuario");
         try {
-            this.usuarioLogado  = (Usuario)read("select p from Usuario p" + " where p.matricula = '" + matricula + "' and p.senha = '" + senha+"'", 
+            this.usuarioLogado  = (Usuario)read("select p from Usuario p where p.matricula = '" + matricula + "' and p.senha = '" + senha + "'", 
                             Usuario.class).get(0);                        
             return "indexUsuario";
-        } catch (Exception e) {            
-//            e.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Erro ao Logar","Matricula e/ou senha estão incorretos"));
+        } catch (Exception e) {   
+            Logging.d(TAG, e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,"Erro ao Logar","Matricula e/ou senha estão incorretos"));
             return null;
         }
     }
     
     public String logout(){
-        
         this.usuarioLogado = null;
         this.servidorLogado = null;
-        
         return "login";
     }
     

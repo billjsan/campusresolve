@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>Painel Principal</title>
+        <title>Campus Resolve #{loginController.usuarioLogado.nome}</title>
     </h:head>
     <h:body>
         <b:growl id="growMenu" delay="4000" show-detail="true" show-summary="true"/>
@@ -15,14 +15,15 @@
 
             <b:navBar brand="Campus Resolve" brandHref="indexUsuario.xhtml" fluid="true">
                 <b:navbarLinks>
-                    <b:navLink value="Nova Manifestação" href="#" onclick="$('.mRegistrarDenuncia').modal('show')"></b:navLink>   
+                    <b:navLink value="Reportar Ocorrência" href="#" onclick="$('.mRegistrarDenuncia').modal('show')"></b:navLink>   
                 </b:navbarLinks>
                 <b:navbarLinks pull="right">
-                    <b:navLink value="" iconAwesome="fa-power-off" onclick="location.href = 'login.xhtml';ajax:loginController.logout()"></b:navLink>  
+                    <b:navLink value="sair" iconAwesome="fa-power-off" onclick="location.href = 'login.xhtml';ajax:loginController.logout()"></b:navLink>  
                 </b:navbarLinks>
             </b:navBar>
+            
             <b:panelGrid colSpans="2,10">
-                <b:panel style="height: 280px; text-align: center;" title="Bem-Vindo" collapsible="false">
+                <b:panel style="height: 280px; margin-right: 10px; margin-left: 10px; text-align: center;" title="Bem-Vindo" collapsible="false">
 
                     <b:row style="text-align: center;"> <h:graphicImage value="resources/icone-de-perfil2.png" style="width: 100px; height: 100px; margin-right: 5px; " /></b:row>
                     <f:facet name="footer">
@@ -36,43 +37,49 @@
                         </b:row>
                     </f:facet>
                 </b:panel>
-                <b:panel style="background-color: #98ff98;" title="Denúncias" collapsible="false">
-                    <b:panelGrid columns="4">
-                        <c:forEach items="#{denunciaController.listarDenuncias(loginController.usuarioLogado)}" var="denuncia">
-                            <b:panel collapsible="false" style="align-content: center; align-items: center; margin: 10px; max-width: 300px; word-wrap: break-word;">
-                                <f:facet name="heading">
-                                    <b:row style="margin: 3px;">
 
-                                        <h:outputText value=" #{denuncia.tipoDenuncia} " style="margin-right: 3px"  />
-                                    </b:row>
-                                </f:facet>
-
-                                <b:row style="margin: 3px;">
-                                    <b:label value="Assunto: "   style="margin-right: 3px" />
-                                    <h:outputText value="#{denuncia.assundoDenuncia}" />
-                                </b:row>
-
-                                <b:row style="margin: 3px;">
-                                    <b:label value="Descrição"  style="margin-right: 3px" />
-                                    <h:outputText value="#{denuncia.descricaoDenuncia}" />                  
-                                </b:row>
-                                <b:row style="margin: 3px;">
-                                    <b:label value="Local: "  style="margin-right: 3px" />
-                                    <h:outputText value=" #{denuncia.localDenuncia} " />
-                                </b:row>
-                                <f:facet name="footer">
-
-                                    <b:row style="margin: 3px;">
-                                        <h:outputText value="#{denunciaController.formatarData(denuncia.dataDenuncia)}" />
-                                    </b:row>
-                                </f:facet>
-                            </b:panel>
-
-                        </c:forEach>
-                    </b:panelGrid>
+                <b:panel style="margin-right: 10px; margin-left: 10px;" title="Minhas Ocorrências" collapsible="false">
+                    <b:row styleClass="table-responsive">
+                    <h:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias(loginController.usuarioLogado)}" var="denuncia" rows="15">
+                        <h:column>
+                                <f:facet name="header"><h:outputText value="Identificador" /></f:facet>
+                                <h:outputText value=" #{denuncia.id} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Tipo" /></f:facet>
+                                <h:outputText value=" #{denuncia.tipoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Assunto" /></f:facet>
+                                <h:outputText value=" #{denuncia.assundoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Descrição" /></f:facet>
+                                <h:outputText value=" #{denuncia.descricaoDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Local" /></f:facet>
+                                <h:outputText value=" #{denuncia.localDenuncia} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Status" /></f:facet>
+                                <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header"><h:outputText value="Ação" /></f:facet>
+                                <b:commandButton value="Detalhes" styleClass="btn-primary" 
+                                    style="padding: 5px 10px; font-size: 10px; margin-left: 5px; margin-right: 5px"
+                                    update=":formModalDetalhes" oncomplete="PF('modalDetalhes').show()" process="@this">
+                                    
+                                </b:commandButton>
+                            </h:column>
+                        </h:dataTable>
+                    </b:row>
                 </b:panel>
+
             </b:panelGrid>
         </b:form>
+        
         <b:form id="formRegistrarDenuncia">
             <b:modal id="modalRegistrarDenuncia" class="mRegistrarDenuncia">
                 <b:panelGrid columns="1">
@@ -110,5 +117,28 @@
                 </b:panelGrid>
             </b:modal>
         </b:form>
+        
+    <h:form id="formModalDetalhes">
+        <p:dialog header="Detalhes da Ocorrência" widgetVar="modalDetalhes" modal="true" resizable="false" width="500" showEffect="fade" hideEffect="fade" closable="true" draggable="false">
+            <b:panelGrid columns="2">
+                <h:outputText value="ID:" />
+                
+
+                <h:outputText value="Título:" />
+                
+
+                <h:outputText value="Descrição:" />
+                
+
+                <h:outputText value="Data de Criação:" />
+                
+
+                <h:outputText value="Status:" />
+                
+            </b:panelGrid>
+            <p:commandButton value="Fechar" icon="ui-icon-close" onclick="PF('modalDetalhes').hide()" type="button" />
+        </p:dialog>
+    </h:form>
+        
     </h:body>
 </html>

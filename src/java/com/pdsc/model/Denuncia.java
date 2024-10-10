@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -44,6 +45,9 @@ public class Denuncia {
     @Pattern(regexp = "[N|P|E|R|A]", message = "Estado da denúncia inválido")
     private String estadoDenuncia; /* novo N | processando P | encaminhado E | resolvido R | arquivado A */
 
+    @Transient
+    private String estadoDenunciaAmigavel;
+    
     @ManyToOne
     private Servidor servidor;
 
@@ -52,6 +56,50 @@ public class Denuncia {
 
     public int getId() {
         return id;
+    }
+    
+    public String getEstadoDenunciaAmigavel() {
+        String invalid = "unknown";
+        if(estadoDenuncia != null) {
+            switch(estadoDenuncia) {
+                case "N":
+                    return "Novo";
+                case "P":
+                    return "processando";
+                case "E":
+                    return "encaminhado";
+                case "R":
+                    return "resolvido";
+                case "A":
+                    return "Arquivado";
+                default:
+                    return invalid;
+            }
+        }
+        return invalid;       
+    }
+    
+    public void setEstadoDenunciaAmigavel(String estado) {
+        String invalid = "unknown";
+        switch(estado) {
+            case "N":
+                estadoDenunciaAmigavel = "Novo";
+                break;
+            case "P":
+                estadoDenunciaAmigavel =  "processando";
+                break;
+            case "E":
+                estadoDenunciaAmigavel =  "encaminhado";
+                break;
+            case "R":
+                estadoDenunciaAmigavel =  "resolvido";
+                break;
+            case "A":
+                estadoDenunciaAmigavel =  "Arquivado";
+                break;
+            default:
+                estadoDenunciaAmigavel =  invalid;
+        }
     }
 
     public void setId(int id) {
@@ -133,7 +181,7 @@ public class Denuncia {
     public String getEstadoDenuncia() {
         return estadoDenuncia;
     }
-
+    
     public void setEstadoDenuncia(String estadoDenuncia) {
         this.estadoDenuncia = estadoDenuncia;
     }
