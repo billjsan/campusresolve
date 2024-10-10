@@ -40,40 +40,39 @@
 
                 <b:panel style="margin-right: 10px; margin-left: 10px;" title="Minhas Ocorrências" collapsible="false">
                     <b:row styleClass="table-responsive">
-                    <h:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias(loginController.usuarioLogado)}" var="denuncia" rows="15">
-                        <h:column>
-                                <f:facet name="header"><h:outputText value="Identificador" /></f:facet>
+                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias(loginController.usuarioLogado)}" var="denuncia"
+                         paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="20,30,40">
+                            <p:column headerText="Identificador">
                                 <h:outputText value=" #{denuncia.id} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Tipo" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Tipo">
                                 <h:outputText value=" #{denuncia.tipoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Assunto" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Assunto">
                                 <h:outputText value=" #{denuncia.assundoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Descrição" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Descrição">
                                 <h:outputText value=" #{denuncia.descricaoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Local" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Local">
                                 <h:outputText value=" #{denuncia.localDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Status" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Status">
                                 <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Ação" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Data">
+                            <h:outputText value="#{denuncia.dataDenuncia}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Ação">
                                 <b:commandButton value="Detalhes" styleClass="btn-primary" 
                                     style="padding: 5px 10px; font-size: 10px; margin-left: 5px; margin-right: 5px"
                                     update=":formModalDetalhes" oncomplete="PF('modalDetalhes').show()" process="@this">
-                                    
+                                <f:setPropertyActionListener target="#{denunciaController.denunciaSelecionada}" value="#{denuncia}" />
                                 </b:commandButton>
-                            </h:column>
-                        </h:dataTable>
+                            </p:column>
+                        </p:dataTable>
                     </b:row>
                 </b:panel>
 
@@ -118,27 +117,51 @@
             </b:modal>
         </b:form>
         
-    <h:form id="formModalDetalhes">
-        <p:dialog header="Detalhes da Ocorrência" widgetVar="modalDetalhes" modal="true" resizable="false" width="500" showEffect="fade" hideEffect="fade" closable="true" draggable="false">
-            <b:panelGrid columns="2">
-                <h:outputText value="ID:" />
-                
+        <h:form id="formModalDetalhes">
+            <p:dialog header="Detalhes da Ocorrência" widgetVar="modalDetalhes" modal="true" resizable="false" width="500" showEffect="fade" hideEffect="fade" closable="true" draggable="false">
+                <b:panelGrid columns="2">
+                    <h:outputText value="Identificador:" />
+                    <h:outputText value="#{denunciaController.denunciaSelecionada.id}" />
 
-                <h:outputText value="Título:" />
-                
+                    <h:outputText value="Tipo de Manifestação:" />
+                    <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.tipoDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
+                        <f:selectItem itemLabel="Elogio" itemValue="Elogio" />
+                        <f:selectItem itemLabel="Reclamação" itemValue="Reclamação" />
+                        <f:selectItem itemLabel="Solicitação" itemValue="Solicitação" />
+                        <f:selectItem itemLabel="Sugestão" itemValue="Sugestão" />
+                        <f:selectItem itemLabel="Denúncia" itemValue="Denúncia" />
+                    </b:selectOneMenu>
 
-                <h:outputText value="Descrição:" />
-                
+                    <h:outputText value="Assunto:" />
+                    <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.assundoDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
+                        <f:selectItem itemLabel="Assédio" itemValue="Assedio" />
+                        <f:selectItem itemLabel="Agradecimento" itemValue="Agradecimento" />
+                        <f:selectItem itemLabel="Alimentação" itemValue="Alimentação" />
+                        <f:selectItem itemLabel="Bolsas" itemValue="Bolsas" />
+                        <f:selectItem itemLabel="Conduta Docente" itemValue="Conduta Docente" />
+                        <f:selectItem itemLabel="Cursos" itemValue="Cursos" />
+                        <f:selectItem itemLabel="Descriminação" itemValue="Descriminação" />
+                        <f:selectItem itemLabel="Outro" itemValue="Outro" />
+                    </b:selectOneMenu>
 
-                <h:outputText value="Data de Criação:" />
-                
+                    <h:outputText value="Descrição:" />
+                    <b:inputTextarea value="#{denunciaController.denunciaSelecionada.descricaoDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" rows="4" maxlength="250" />
 
-                <h:outputText value="Status:" />
-                
-            </b:panelGrid>
-            <p:commandButton value="Fechar" icon="ui-icon-close" onclick="PF('modalDetalhes').hide()" type="button" />
-        </p:dialog>
-    </h:form>
+                    <h:outputText value="Local do Fato:" />
+                    <b:inputText value="#{denunciaController.denunciaSelecionada.localDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" maxlength="50" />
+
+                    <h:outputText value="Data/Hora:" />
+                    <b:dateTimePicker value="#{denunciaController.denunciaSelecionada.dataDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}"
+                                      mode="popup" format="DD/MM/YYYY HH:mm" locale="pt" />
+
+                    <h:outputText value="Status:" />
+                    <h:outputText value="#{denunciaController.denunciaSelecionada.estadoDenunciaAmigavel}" />
+                </b:panelGrid>
+                <b:commandButton value="Salvar" action="#{denunciaController.atualizarDenuncia()}" rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
+                <b:commandButton value="Excluir" action="#{denunciaController.excluirDenuncia()}" rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
+                <p:commandButton value="Fechar" icon="ui-icon-close" onclick="PF('modalDetalhes').hide()" type="button" />
+            </p:dialog>
+        </h:form>
         
     </h:body>
 </html>

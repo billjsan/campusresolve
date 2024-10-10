@@ -63,9 +63,9 @@ public class Denuncia {
         if(estadoDenuncia != null) {
             switch(estadoDenuncia) {
                 case "N":
-                    return "Novo";
+                    return "Nova";
                 case "P":
-                    return "processando";
+                    return "Em processamento";
                 case "E":
                     return "encaminhado";
                 case "R":

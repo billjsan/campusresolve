@@ -1,5 +1,6 @@
 package com.pdsc.controller;
 
+import com.pdsc.model.Denuncia;
 import com.pdsc.util.Logging;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -89,6 +90,23 @@ private static final String TAG = Controller.class.getSimpleName();
             em.close();
         } catch(Exception e){
             Logging.d(TAG, e.getMessage());
+        }
+    }
+    
+    public void delete(Object object) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            Object managedEntity = em.find(object.getClass(), ((Denuncia) object).getId());
+        if (managedEntity != null) {
+            em.remove(managedEntity);
+        }
+            em.getTransaction().commit();
+        } catch(Exception e) {
+            em.getTransaction().rollback();
+            Logging.d(TAG, e.getMessage());
+        } finally {
+            em.close();
         }
     }
 }

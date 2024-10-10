@@ -26,15 +26,26 @@ public class DenunciaController extends Controller {
     private List<Denuncia> listaDenunciasServidor;
     private List<Denuncia> listaDenunciasUsuario;
     private final SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+    private Denuncia denunciaSelecionada;
     
     @PostConstruct
     public void init(){
         this.denuncia = new Denuncia();
     }
     
+    public Denuncia getDenunciaSelecionada() {
+        return denunciaSelecionada;
+    }
+    
+    public void setDenunciaSelecionada(Denuncia denuncia) {
+        denunciaSelecionada = denuncia;
+    }
+    
     public String inserirDenuncia() {
     FacesContext context = FacesContext.getCurrentInstance();
 
+    
+    
     // Validação do campo "Descrição"
     if (denuncia.getDescricaoDenuncia() == null || denuncia.getDescricaoDenuncia().trim().isEmpty()) {
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Descrição é obrigatória."));
@@ -105,6 +116,15 @@ public class DenunciaController extends Controller {
         this.listaDenunciasUsuario = listaDenunciasUsuario;
     }
     
+    public void atualizarDenuncia() {
+        if(denunciaSelecionada != null) {
+            update(denunciaSelecionada);
+        }      
+    }
     
-    
+    public void excluirDenuncia() {
+        if(denunciaSelecionada != null) {
+            delete(denunciaSelecionada);
+        } 
+    }
 }
