@@ -6,6 +6,7 @@ import com.pdsc.model.Denuncia;
 import com.pdsc.model.Usuario;
 import com.pdsc.util.Logging;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -26,8 +27,10 @@ public class DenunciaController extends Controller {
     private Denuncia denuncia;
     private List<Denuncia> listaDenunciasServidor;
     private List<Denuncia> listaDenunciasUsuario;
+    private List<Denuncia> denunciasFiltradas;
     private final SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private Denuncia denunciaSelecionada;
+    private String tipoFiltro = null;
 
     @PostConstruct
     public void init() {
@@ -40,6 +43,34 @@ public class DenunciaController extends Controller {
 
     public void setDenunciaSelecionada(Denuncia denuncia) {
         denunciaSelecionada = denuncia;
+    }
+
+    public void setTipoDeununcia(String tipo) {
+        this.tipoFiltro = tipo;
+    }
+    
+    public String getTipoFiltro() {
+        return tipoFiltro;
+    }
+    
+    public void setTipoFiltro(String tipoFiltro) {
+        this.tipoFiltro = tipoFiltro;
+    }
+
+    public List<Denuncia> listarDenunciasFiltradas() {
+        if (tipoFiltro == null || tipoFiltro.isEmpty()) {
+            return listarTodasDenuncias();
+        } else {
+            return filtrarDenuncias(tipoFiltro);
+        }
+    }
+    
+    public List<Denuncia> getDenunciasFiltradas() {
+        if (tipoFiltro == null || tipoFiltro.isEmpty()) {
+            return listarTodasDenuncias();
+        } else {
+            return filtrarDenuncias(tipoFiltro);
+        }
     }
 
     public String inserirDenuncia() {
@@ -84,14 +115,28 @@ public class DenunciaController extends Controller {
         }
         return true;
     }
-    
+
+    public List<Denuncia> filtrarDenuncias(String tipo) {
+        List<Denuncia> result = new ArrayList();
+        try {
+            EntityManager em = emf.createEntityManager();
+            result = (List<Denuncia>) (Denuncia) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia")
+                    .setParameter("tipoDenuncia", tipo);
+            em.close();
+
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em filtrarDenuncias() " + e.getMessage());
+        }
+        return result;
+    }
+
     public String getNumeroDenunciaPorTipoString(String tipo) {
         String result = "0";
         try {
             EntityManager em = emf.createEntityManager();
             Long count = (Long) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia")
-                                   .setParameter("tipoDenuncia", tipo)
-                                   .getSingleResult();
+                    .setParameter("tipoDenuncia", tipo)
+                    .getSingleResult();
             em.close();
             result = count.toString();
         } catch (Exception e) {
@@ -144,7 +189,7 @@ public class DenunciaController extends Controller {
         return read("select d from Denuncia d where d.usuario.id = " + usuario.getId(), Denuncia.class);
     }
 
-    public List<Denuncia> listarDenuncias() {
+    public List<Denuncia> listarTodasDenuncias() {
         return read("select d from Denuncia d ", Denuncia.class);
     }
 

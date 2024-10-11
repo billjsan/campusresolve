@@ -20,24 +20,35 @@
                 </b:navbarLinks>
             </b:navBar>
             <b:panelGrid colSpans="2,10">
-                <b:panel style="height: 280px; text-align: center;" title="Bem-Vindo" collapsible="false">
-
-                    <b:row style="text-align: center;"> <h:graphicImage value="resources/icone-de-perfil2.png" style="width: 100px; height: 100px; margin-right: 5px; " /></b:row>
+                <b:panel style="text-align: center; margin-left: 20px" 
+                         title="Bem-Vindo" 
+                         collapsible="false">
+                    <b:row>
+                        <h:graphicImage value="resources/icone-de-perfil2.png" 
+                                        style="width: 100px; height: 100px; margin-right: 5px; " />
+                    </b:row>
                     <f:facet name="footer">
-                        <b:label value="Matrícula: " style="font-weight: bold; margin-right: 3px;" />
+                        <b:label value="Matrícula: " 
+                                 style="font-weight: bold; margin-right: 3px;" />
                         <b:row style="margin: 3px;">               
-                            <h:outputText value=" #{loginController.servidorLogado.matricula} " style="margin-right: 3px" />
+                            <h:outputText value=" #{loginController.servidorLogado.matricula} " 
+                                          style="margin-right: 3px" />
                         </b:row>
-                        <b:label value="Nome " style="font-weight: bold; margin-right: 3px;" />
+                        <b:label value="Nome " 
+                                 style="font-weight: bold; margin-right: 3px;" />
                         <b:row style="margin: 3px;">               
-                            <h:outputText value=" #{loginController.servidorLogado.nome} " style="margin-right: 3px" />
+                            <h:outputText value=" #{loginController.servidorLogado.nome} " 
+                                          style="margin-right: 3px" />
                         </b:row>
                     </f:facet>
+                    
                 </b:panel>
-                <b:panel style="margin-right: 10px; margin-left: 10px;" title="Ocorrências" collapsible="false">
-                    <h:panelGroup style="border-bottom: 1px solid #ccc; margin: 10px 0;">
+                <b:panel style="margin-right: 20px;" 
+                         title="Ocorrências" 
+                         collapsible="false">
+                    <h:panelGroup>
                         <b:container fluid="true">
-                            <b:row styleClass="placeholders">
+                            <b:row styleClass="placeholders" style="display: flex; justify-content: space-between;">
                                 <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
                                     <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Elogio')}" styleClass="circle-number" style="background-color: #BAE1FF;"/>
                                     <h:outputText value="Elogio" styleClass="h4"/>
@@ -64,39 +75,38 @@
                                 </b:column>
                             </b:row>
                         </b:container>
-
-                    </h:panelGroup>
-
-                    <b:row styleClass="table-responsive">
-                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias()}" var="denuncia"
-                                     paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
-                                     {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,30">
-                            <p:column headerText="Identificador">
-                                <h:outputText value=" #{denuncia.id} " />
-                            </p:column>
-                            <p:column headerText="Tipo">
-                                <h:outputText value=" #{denuncia.tipoDenuncia} " />
-                            </p:column>
-                            <p:column headerText="Assunto">
-                                <h:outputText value=" #{denuncia.assundoDenuncia} " />
-                            </p:column>
-                            <p:column headerText="Descrição">
-                                <h:outputText value="#{denuncia.descricaoCurta}" />
-                            </p:column>
-                            <p:column headerText="Local">
-                                <h:outputText value=" #{denuncia.localDenuncia} " />
-                            </p:column>
-                            <p:column headerText="Status">
-                                <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
-                            </p:column>
-                            <p:column headerText="Data">
-                                <h:outputText value="#{denuncia.dataDenuncia}">
-                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                                </h:outputText>
-                            </p:column>
-                            
-                        </p:dataTable>
-                    </b:row>
+                        <b:row styleClass="table-responsive">
+                            <p:dataTable id="tabelaDenuncias" styleClass="table table-striped" value="#{denunciaController.listarDenunciasFiltradas()}" 
+                                     var="denuncia" paginator="true" rows="10" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
+                                     {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                     rowsPerPageTemplate="10,20,30">
+                                <p:column headerText="Identificador">
+                                    <h:outputText value=" #{denuncia.id} " />
+                                </p:column>
+                                <p:column headerText="Tipo">
+                                    <h:outputText value=" #{denuncia.tipoDenuncia} " />
+                                </p:column>
+                                <p:column headerText="Assunto">
+                                    <h:outputText value=" #{denuncia.assundoDenuncia} " />
+                                </p:column>
+                                <p:column headerText="Descrição">
+                                    <h:outputText value="#{denuncia.descricaoCurta}" />
+                                </p:column>
+                                <p:column headerText="Local">
+                                    <h:outputText value=" #{denuncia.localDenuncia} " />
+                                </p:column>
+                                <p:column headerText="Status">
+                                    <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
+                                </p:column>
+                                <p:column headerText="Data">
+                                    <h:outputText value="#{denuncia.dataDenuncia}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                    </h:outputText>
+                                </p:column>
+                            </p:dataTable>
+                        </b:row>
+                    </h:panelGroup>  
                 </b:panel>
             </b:panelGrid>
         </b:form>
