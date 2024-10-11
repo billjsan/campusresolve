@@ -40,7 +40,7 @@
 
                 <b:panel style="margin-right: 10px; margin-left: 10px;" title="Minhas Ocorrências" collapsible="false">
                     <b:row styleClass="table-responsive">
-                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenunciasParaUsuario(loginController.usuarioLogado)}" var="denuncia"
+                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenunciasPorUsuario(loginController.usuarioLogado)}" var="denuncia"
                                      paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,30">
                             <p:column headerText="Identificador">
                                 <h:outputText value=" #{denuncia.id} " />
@@ -80,39 +80,72 @@
         </b:form>
 
         <b:form id="formRegistrarDenuncia">
-            <b:modal id="modalRegistrarDenuncia" class="mRegistrarDenuncia">
+            <b:modal id="modalRegistrarDenuncia" 
+                     class="mRegistrarDenuncia">
                 <b:panelGrid columns="1">
-                    <b:selectOneMenu style="border: 1px solid; border-color: black" value="#{denunciaController.denuncia.tipoDenuncia}" label="Qual o Tipo de Manifestação?" required="true" 
+                    <b:selectOneMenu style="width: 250px;" 
+                                     value="#{denunciaController.denuncia.tipoDenuncia}" 
+                                     label="Ocorrência:" 
+                                     required="true" 
                                      select2="true">
-                        <f:selectItem itemLabel="(Selecione um Tipo)" itemValue="" />
-                        <f:selectItem itemLabel="Elogio" itemValue="Elogio" />
-                        <f:selectItem itemLabel="Reclamação" itemValue="Reclamação" />
-                        <f:selectItem itemLabel="Solicitação" itemValue="Solicitação" />
-                        <f:selectItem itemLabel="Sugestão" itemValue="Sugestão" />
-                        <f:selectItem itemLabel="Denuncia" itemValue="Denuncia" />
+                        <f:selectItem itemLabel="(Selecione um Tipo)" 
+                                      itemValue="" />
+                        <f:selectItem itemLabel="Elogio" 
+                                      itemValue="Elogio" />
+                        <f:selectItem itemLabel="Reclamação" 
+                                      itemValue="Reclamação" />
+                        <f:selectItem itemLabel="Solicitação" 
+                                      itemValue="Solicitação" />
+                        <f:selectItem itemLabel="Sugestão" 
+                                      itemValue="Sugestão" />
+                        <f:selectItem itemLabel="Denuncia" 
+                                      itemValue="Denuncia" />
                     </b:selectOneMenu>
-                    <b:selectOneMenu value="#{denunciaController.denuncia.assundoDenuncia}" label="Qual o Assunto?" required="true"
+                    <b:selectOneMenu style="width: 250px;" 
+                                     value="#{denunciaController.denuncia.assundoDenuncia}" 
+                                     label="Assunto:" 
+                                     required="true"
                                      select2="true">
-                        <f:selectItem itemLabel="(Selecione um Assunto)" itemValue="" />
-                        <f:selectItem itemLabel="Assedio" itemValue="Assedio" />
-                        <f:selectItem itemLabel="Agradecimento" itemValue="Agradecimento" />
-                        <f:selectItem itemLabel="Alimentação" itemValue="Alimentação" />
-                        <f:selectItem itemLabel="Bolsas" itemValue="Bolsas" />
-                        <f:selectItem itemLabel="Conduta Docente" itemValue="Conduta Docente" />
-                        <f:selectItem itemLabel="Cursos" itemValue="Cursos" />
-                        <f:selectItem itemLabel="Descriminação" itemValue="Descriminação" />
-                        <f:selectItem itemLabel="Outro" itemValue="Outro" />
+                        <f:selectItem itemLabel="(Selecione um Assunto)" 
+                                      itemValue="" />
+                        <f:selectItem itemLabel="Assedio" 
+                                      itemValue="Assedio" />
+                        <f:selectItem itemLabel="Agradecimento" 
+                                      itemValue="Agradecimento" />
+                        <f:selectItem itemLabel="Alimentação" 
+                                      itemValue="Alimentação" />
+                        <f:selectItem itemLabel="Bolsas" 
+                                      itemValue="Bolsas" />
+                        <f:selectItem itemLabel="Conduta Docente" 
+                                      itemValue="Conduta Docente" />
+                        <f:selectItem itemLabel="Cursos" 
+                                      itemValue="Cursos" />
+                        <f:selectItem itemLabel="Descriminação" 
+                                      itemValue="Descriminação" />
+                        <f:selectItem itemLabel="Outro" 
+                                      itemValue="Outro" />
                     </b:selectOneMenu>
-                    <b:inputTextarea label="Descrição" required="true" rows="4" maxlength="250" value="#{denunciaController.denuncia.descricaoDenuncia}" />                    
-                    <b:inputText placeholder="Local do fato" required="true" maxlength="50" label="Local do fato" value="#{denunciaController.denuncia.localDenuncia}"  />
+                    <b:inputText placeholder="Local do fato" 
+                                 required="true" 
+                                 maxlength="50" 
+                                 label="Local do fato" 
+                                 value="#{denunciaController.denuncia.localDenuncia}"  />
                     <b:dateTimePicker value="#{denunciaController.denuncia.dataDenuncia}"
                                       label="Data/Hora"
                                       mode="popup"
                                       required="true"
                                       format="DD/MM/YYYY HH:mm" 
                                       locale="pt" />
-
-                    <b:commandButton value="Registrar" action="#{denunciaController.inserirDenuncia()}" />
+                    <b:inputTextarea label="Descrição" 
+                                     required="true" 
+                                     rows="4" 
+                                     maxlength="5000" 
+                                     value="#{denunciaController.denuncia.descricaoDenuncia}"
+                                     style="height:500px;"/>                    
+                    <b:commandButton 
+                                     style="float: right;"
+                                     value="Registrar"
+                                     action="#{denunciaController.inserirDenuncia()}" />
                 </b:panelGrid>
             </b:modal>
         </b:form>
