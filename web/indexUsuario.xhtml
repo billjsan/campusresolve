@@ -21,7 +21,7 @@
                     <b:navLink value="sair" iconAwesome="fa-power-off" onclick="location.href = 'login.xhtml';ajax:loginController.logout()"></b:navLink>  
                 </b:navbarLinks>
             </b:navBar>
-            
+
             <b:panelGrid colSpans="2,10">
                 <b:panel style="height: 280px; margin-right: 10px; margin-left: 10px; text-align: center;" title="Bem-Vindo" collapsible="false">
 
@@ -40,8 +40,8 @@
 
                 <b:panel style="margin-right: 10px; margin-left: 10px;" title="Minhas Ocorrências" collapsible="false">
                     <b:row styleClass="table-responsive">
-                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias(loginController.usuarioLogado)}" var="denuncia"
-                         paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="20,30,40">
+                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenunciasParaUsuario(loginController.usuarioLogado)}" var="denuncia"
+                                     paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,30">
                             <p:column headerText="Identificador">
                                 <h:outputText value=" #{denuncia.id} " />
                             </p:column>
@@ -61,15 +61,15 @@
                                 <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
                             </p:column>
                             <p:column headerText="Data">
-                            <h:outputText value="#{denuncia.dataDenuncia}">
-                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                <h:outputText value="#{denuncia.dataDenuncia}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Ação">
                                 <b:commandButton value="Detalhes" styleClass="btn-primary" 
-                                    style="padding: 5px 10px; font-size: 10px; margin-left: 5px; margin-right: 5px"
-                                    update=":formModalDetalhes" oncomplete="PF('modalDetalhes').show()" process="@this">
-                                <f:setPropertyActionListener target="#{denunciaController.denunciaSelecionada}" value="#{denuncia}" />
+                                                 style="padding: 5px 10px; font-size: 10px; margin-left: 5px; margin-right: 5px"
+                                                 update=":formModalDetalhes" oncomplete="PF('modalDetalhes').show()" process="@this">
+                                    <f:setPropertyActionListener target="#{denunciaController.denunciaSelecionada}" value="#{denuncia}" />
                                 </b:commandButton>
                             </p:column>
                         </p:dataTable>
@@ -78,7 +78,7 @@
 
             </b:panelGrid>
         </b:form>
-        
+
         <b:form id="formRegistrarDenuncia">
             <b:modal id="modalRegistrarDenuncia" class="mRegistrarDenuncia">
                 <b:panelGrid columns="1">
@@ -116,7 +116,7 @@
                 </b:panelGrid>
             </b:modal>
         </b:form>
-        
+
         <h:form id="formModalDetalhes">
             <p:dialog header="Detalhes da Ocorrência" widgetVar="modalDetalhes" modal="true" resizable="false" width="500" showEffect="fade" hideEffect="fade" closable="true" draggable="false">
                 <b:panelGrid columns="2">
@@ -162,6 +162,6 @@
                 <p:commandButton value="Fechar" icon="ui-icon-close" onclick="PF('modalDetalhes').hide()" type="button" />
             </p:dialog>
         </h:form>
-        
+
     </h:body>
 </html>

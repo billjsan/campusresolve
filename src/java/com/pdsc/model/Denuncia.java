@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -25,18 +26,23 @@ public class Denuncia {
     private String setorDenuncia;
 
     @Size(min = 2, max = 50)
+    @NotNull
     private String tipoDenuncia;
 
+    @NotNull
     @Size(min = 2, max = 100)
     private String assundoDenuncia;
 
+    @NotNull
     @Temporal(TemporalType.DATE)
     private Date dataDenuncia;
 
-    @Size(min = 2, max = 100)
+    @NotNull
+    @Size(min = 2, max = 50)
     private String localDenuncia;
 
-    @Size(min = 5)
+    @NotNull
+    @Size(min = 50, max = 5000)
     private String descricaoDenuncia;
 
     @Temporal(TemporalType.TIMESTAMP)
