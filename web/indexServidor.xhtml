@@ -48,64 +48,124 @@
                          collapsible="false">
                     <h:panelGroup>
                         <b:container fluid="true">
-                            <b:row styleClass="placeholders" style="display: flex; justify-content: space-between;">
-                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Elogio')}" styleClass="circle-number" style="background-color: #BAE1FF;"/>
-                                    <h:outputText value="Elogio" styleClass="h4"/>
+                            <b:row styleClass="placeholders"
+                                   style="display: flex; justify-content: space-between;">
+                                <b:column col-xs="6"
+                                          col-sm="2"
+                                          styleClass="placeholder"
+                                          style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="#{denunciaController.getQuantidadeOcorrenciaPorTipoString('Elogio')}"
+                                                  styleClass="circle-number"
+                                                  style="background-color: #BAE1FF;"/>
+                                    <p:commandButton value="Elogio" 
+                                                     update="tabelaDenuncias"
+                                                     style="margin-top: 10px"
+                                                     action="#{denunciaController.setFiltroDenuncia('Elogio')}"/>
                                 </b:column>
 
-                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Sugestão')}" styleClass="circle-number" style="background-color: #BAFFC9;"/>
-                                    <h:outputText value="Sugestão" styleClass="h4" />
+                                <b:column col-xs="6"
+                                          col-sm="2"
+                                          styleClass="placeholder"
+                                          style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="#{denunciaController.getQuantidadeOcorrenciaPorTipoString('Sugestão')}"
+                                                  styleClass="circle-number"
+                                                  style="background-color: #BAFFC9;"/>
+                                    <p:commandButton value="Sugestão" 
+                                                     update="tabelaDenuncias"
+                                                     style="margin-top: 10px"
+                                                     action="#{denunciaController.setFiltroDenuncia('Sugestao')}"/>
                                 </b:column>
 
-                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Solicitacao')}" styleClass="circle-number" style="background-color: #FFFFBA;" />
-                                    <h:outputText value="Solicitação" styleClass="h4" />
+                                <b:column col-xs="6"
+                                          col-sm="2"
+                                          styleClass="placeholder"
+                                          style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="#{denunciaController.getQuantidadeOcorrenciaPorTipoString('Solicitacao')}"
+                                                  styleClass="circle-number"
+                                                  style="background-color: #FFFFBA;" />
+                                    <p:commandButton value="Solicitação" 
+                                                     update="tabelaDenuncias"
+                                                     style="margin-top: 10px"
+                                                     action="#{denunciaController.setFiltroDenuncia('Solicitacao')}"/>
                                 </b:column>
 
-                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Reclamacao')}" styleClass="circle-number" style="background-color: #FFDFBA;"/>
-                                    <h:outputText value="Reclamação" styleClass="h4" />
+                                <b:column col-xs="6" 
+                                          col-sm="2" 
+                                          styleClass="placeholder" 
+                                          style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="#{denunciaController.getQuantidadeOcorrenciaPorTipoString('Reclamacao')}" 
+                                                  styleClass="circle-number" 
+                                                  style="background-color: #FFDFBA;"/>
+                                    <p:commandButton value="Reclamação" 
+                                                     update="tabelaDenuncias"
+                                                     style="margin-top: 10px"
+                                                     action="#{denunciaController.setFiltroDenuncia('Reclamacao')}"/>
                                 </b:column>
 
-                                <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Denuncia')}" styleClass="circle-number" style="background-color: #FFB3BA;"/>
-                                    <h:outputText value="Denúncia" styleClass="h4" />
+                                <b:column col-xs="6" 
+                                          col-sm="2" 
+                                          styleClass="placeholder" 
+                                          style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="#{denunciaController.getQuantidadeOcorrenciaPorTipoString('Denuncia')}" 
+                                                  styleClass="circle-number" 
+                                                  style="background-color: #FFB3BA;"/>
+                                    <p:commandButton value="Denúncia" 
+                                                     update="tabelaDenuncias"
+                                                     style="margin-top: 10px"
+                                                     action="#{denunciaController.setFiltroDenuncia('Denuncia')}"/>
+                                </b:column>
+                                
+                                <b:column col-xs="6" 
+                                          col-sm="2" 
+                                          styleClass="placeholder" 
+                                          style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
+                                    <h:outputText value="#{denunciaController.getQuantidadeOcorrenciaPorTipoString('todas')}" 
+                                                  styleClass="circle-number" 
+                                                  style="background-color: #B5B5B5;"/>
+                                    <p:commandButton value="Todas" 
+                                                     update="tabelaDenuncias"
+                                                     style="margin-top: 10px"
+                                                     action="#{denunciaController.setFiltroDenuncia('')}"/>
                                 </b:column>
                             </b:row>
                         </b:container>
-                        <b:row styleClass="table-responsive">
-                            <p:dataTable id="tabelaDenuncias" styleClass="table table-striped" value="#{denunciaController.listarDenunciasFiltradas()}" 
-                                     var="denuncia" paginator="true" rows="10" 
-                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
-                                     {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
-                                     rowsPerPageTemplate="10,20,30">
-                                <p:column headerText="Identificador">
-                                    <h:outputText value=" #{denuncia.id} " />
-                                </p:column>
-                                <p:column headerText="Tipo">
-                                    <h:outputText value=" #{denuncia.tipoDenuncia} " />
-                                </p:column>
-                                <p:column headerText="Assunto">
-                                    <h:outputText value=" #{denuncia.assundoDenuncia} " />
-                                </p:column>
-                                <p:column headerText="Descrição">
-                                    <h:outputText value="#{denuncia.descricaoCurta}" />
-                                </p:column>
-                                <p:column headerText="Local">
-                                    <h:outputText value=" #{denuncia.localDenuncia} " />
-                                </p:column>
-                                <p:column headerText="Status">
-                                    <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
-                                </p:column>
-                                <p:column headerText="Data">
-                                    <h:outputText value="#{denuncia.dataDenuncia}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
-                                    </h:outputText>
-                                </p:column>
-                            </p:dataTable>
-                        </b:row>
+                     
+                        <b:container fluid="true">
+                            <b:row styleClass="table-responsive">
+                                <p:dataTable id="tabelaDenuncias" 
+                                             styleClass="table table-striped" 
+                                             value="#{denunciaController.getDenunciaFiltradas()}" 
+                                             var="denuncia" 
+                                             paginator="true" 
+                                             rows="10" 
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                             rowsPerPageTemplate="10,20,30">
+                                    <p:column headerText="Identificador">
+                                        <h:outputText value=" #{denuncia.id} " />
+                                    </p:column>
+                                    <p:column headerText="Tipo">
+                                        <h:outputText value=" #{denuncia.tipoDenuncia} " />
+                                    </p:column>
+                                    <p:column headerText="Assunto">
+                                        <h:outputText value=" #{denuncia.assundoDenuncia} " />
+                                    </p:column>
+                                    <p:column headerText="Descrição">
+                                        <h:outputText value="#{denuncia.descricaoCurta}" />
+                                    </p:column>
+                                    <p:column headerText="Local">
+                                        <h:outputText value=" #{denuncia.localDenuncia} " />
+                                    </p:column>
+                                    <p:column headerText="Status">
+                                        <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
+                                    </p:column>
+                                    <p:column headerText="Data">
+                                        <h:outputText value="#{denuncia.dataDenuncia}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                        </h:outputText>
+                                    </p:column>
+                                </p:dataTable>
+                            </b:row>
+                        </b:container>
                     </h:panelGroup>  
                 </b:panel>
             </b:panelGrid>

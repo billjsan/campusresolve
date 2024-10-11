@@ -27,10 +27,9 @@ public class DenunciaController extends Controller {
     private Denuncia denuncia;
     private List<Denuncia> listaDenunciasServidor;
     private List<Denuncia> listaDenunciasUsuario;
-    private List<Denuncia> denunciasFiltradas;
     private final SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private Denuncia denunciaSelecionada;
-    private String tipoFiltro = null;
+    private String filtroDenuncia;
 
     @PostConstruct
     public void init() {
@@ -45,31 +44,19 @@ public class DenunciaController extends Controller {
         denunciaSelecionada = denuncia;
     }
 
-    public void setTipoDeununcia(String tipo) {
-        this.tipoFiltro = tipo;
+    public void setFiltroDenuncia(String filtro) {
+        filtroDenuncia = filtro;
     }
     
-    public String getTipoFiltro() {
-        return tipoFiltro;
-    }
-    
-    public void setTipoFiltro(String tipoFiltro) {
-        this.tipoFiltro = tipoFiltro;
+    public String getFiltroDenuncia() {
+        return filtroDenuncia;
     }
 
-    public List<Denuncia> listarDenunciasFiltradas() {
-        if (tipoFiltro == null || tipoFiltro.isEmpty()) {
-            return listarTodasDenuncias();
+    public List<Denuncia> getDenunciaFiltradas() {
+        if (filtroDenuncia == null || filtroDenuncia.isEmpty()) {
+            return getTodasDenuncias();
         } else {
-            return filtrarDenuncias(tipoFiltro);
-        }
-    }
-    
-    public List<Denuncia> getDenunciasFiltradas() {
-        if (tipoFiltro == null || tipoFiltro.isEmpty()) {
-            return listarTodasDenuncias();
-        } else {
-            return filtrarDenuncias(tipoFiltro);
+            return getDenunciasPorTipo(filtroDenuncia);
         }
     }
 
@@ -107,32 +94,26 @@ public class DenunciaController extends Controller {
         return "indexUsuario";
     }
 
-    private boolean dataDenunciaEValida(Date data, FacesContext context) {
-        Date dataAtual = new Date();
-        if (data != null && data.after(dataAtual)) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Data da ocorrência não pode ser no futuro"));
-            return false;
-        }
-        return true;
-    }
-
-    public List<Denuncia> filtrarDenuncias(String tipo) {
+    public List<Denuncia> getDenunciasPorTipo(String tipo) {
         List<Denuncia> result = new ArrayList();
         try {
             EntityManager em = emf.createEntityManager();
-            result = (List<Denuncia>) (Denuncia) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia")
-                    .setParameter("tipoDenuncia", tipo);
-            em.close();
-
+            result = em.createQuery("SELECT d FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia", Denuncia.class)
+                   .setParameter("tipoDenuncia", tipo)
+                   .getResultList();
+                    em.close();
         } catch (Exception e) {
             Logging.d(TAG, "erro em filtrarDenuncias() " + e.getMessage());
         }
         return result;
     }
 
-    public String getNumeroDenunciaPorTipoString(String tipo) {
+    public String getQuantidadeOcorrenciaPorTipoString(String tipo) {
         String result = "0";
         try {
+            if ("todas".equals(tipo)) {
+                return String.valueOf(getTodasDenuncias().size());
+            }
             EntityManager em = emf.createEntityManager();
             Long count = (Long) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia")
                     .setParameter("tipoDenuncia", tipo)
@@ -145,6 +126,15 @@ public class DenunciaController extends Controller {
         return result;
     }
 
+    private boolean dataDenunciaEValida(Date data, FacesContext context) {
+        Date dataAtual = new Date();
+        if (data != null && data.after(dataAtual)) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Data da ocorrência não pode ser no futuro"));
+            return false;
+        }
+        return true;
+    }
+        
     private boolean localDenunciaEValido(String loc, FacesContext context) {
         if (loc == null || loc.trim().isEmpty()) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Local do fato é obrigatório."));
@@ -185,11 +175,11 @@ public class DenunciaController extends Controller {
         return true;
     }
 
-    public List<Denuncia> listarDenunciasParaUsuario(Usuario usuario) {
+    public List<Denuncia> listarDenunciasPorUsuario(Usuario usuario) {
         return read("select d from Denuncia d where d.usuario.id = " + usuario.getId(), Denuncia.class);
     }
 
-    public List<Denuncia> listarTodasDenuncias() {
+    public List<Denuncia> getTodasDenuncias() {
         return read("select d from Denuncia d ", Denuncia.class);
     }
 
