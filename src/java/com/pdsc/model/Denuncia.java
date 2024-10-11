@@ -59,9 +59,28 @@ public class Denuncia {
 
     @ManyToOne
     private Usuario usuario;
+    
+    @Transient
+    private String descricaoCurta;
 
     public int getId() {
         return id;
+    }
+    
+    public String getDescricaoCurta(){
+        if (descricaoDenuncia.length() > 50) {
+            return descricaoDenuncia.substring(0, 50) + "...";
+        } else {
+            return descricaoDenuncia;
+        }
+    }
+    
+    public void setDescricaoCurta() {
+        if (descricaoDenuncia.length() > 50) {
+            descricaoCurta = descricaoDenuncia.substring(0, 50) + "...";
+        } else {
+            descricaoCurta = descricaoDenuncia;
+        }
     }
     
     public String getEstadoDenunciaAmigavel() {

@@ -34,88 +34,68 @@
                         </b:row>
                     </f:facet>
                 </b:panel>
-                <b:panel   collapsible="false">
+                <b:panel style="margin-right: 10px; margin-left: 10px;" title="Ocorrências" collapsible="false">
                     <h:panelGroup style="border-bottom: 1px solid #ccc; margin: 10px 0;">
                         <b:container fluid="true">
                             <b:row styleClass="placeholders">
-                                <!-- Círculo Elogio -->
                                 <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="3" styleClass="circle-number" style="background-color: #BAE1FF;"/>
+                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Elogio')}" styleClass="circle-number" style="background-color: #BAE1FF;"/>
                                     <h:outputText value="Elogio" styleClass="h4"/>
                                 </b:column>
 
-                                <!-- Círculo Sugestão -->
                                 <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="5" styleClass="circle-number" style="background-color: #BAFFC9;"/>
+                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Sugestão')}" styleClass="circle-number" style="background-color: #BAFFC9;"/>
                                     <h:outputText value="Sugestão" styleClass="h4" />
                                 </b:column>
 
-                                <!-- Círculo Solicitação -->
                                 <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="2" styleClass="circle-number" style="background-color: #FFFFBA;" />
+                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Solicitacao')}" styleClass="circle-number" style="background-color: #FFFFBA;" />
                                     <h:outputText value="Solicitação" styleClass="h4" />
                                 </b:column>
 
-
-
-                                <!-- Círculo Reclamação -->
                                 <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="7" styleClass="circle-number" style="background-color: #FFDFBA;"/>
+                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Reclamacao')}" styleClass="circle-number" style="background-color: #FFDFBA;"/>
                                     <h:outputText value="Reclamação" styleClass="h4" />
                                 </b:column>
 
-                                <!-- Círculo Denuncia -->
                                 <b:column col-xs="6" col-sm="2" styleClass="placeholder" style="display: flex; flex-direction: column; align-items: center; margin: 0 5px;">
-                                    <h:outputText value="5" styleClass="circle-number" style="background-color: #FFB3BA;"/>
+                                    <h:outputText value="#{denunciaController.getNumeroDenunciaPorTipoString('Denuncia')}" styleClass="circle-number" style="background-color: #FFB3BA;"/>
                                     <h:outputText value="Denúncia" styleClass="h4" />
                                 </b:column>
                             </b:row>
                         </b:container>
 
-                        <!-- Título da Seção para Listagem de Denúncias -->
-
-
                     </h:panelGroup>
 
-                    <b:row styleClass="table-responsive" >
-                        <h:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias()}" var="denuncia" rows="15">
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="ID" /></f:facet>
+                    <b:row styleClass="table-responsive">
+                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenuncias()}" var="denuncia"
+                                     paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} 
+                                     {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,30">
+                            <p:column headerText="Identificador">
                                 <h:outputText value=" #{denuncia.id} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Tipo" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Tipo">
                                 <h:outputText value=" #{denuncia.tipoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Assunto" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Assunto">
                                 <h:outputText value=" #{denuncia.assundoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Descrição" /></f:facet>
-                                <h:outputText value=" #{denuncia.descricaoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Local" /></f:facet>
+                            </p:column>
+                            <p:column headerText="Descrição">
+                                <h:outputText value="#{denuncia.descricaoCurta}" />
+                            </p:column>
+                            <p:column headerText="Local">
                                 <h:outputText value=" #{denuncia.localDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Status" /></f:facet>
-                                <h:outputText value=" #{denuncia.estadoDenuncia} " />
-                            </h:column>
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Data/Hora" /></f:facet>
-                                <h:outputText value=" #{denunciaController.formatarData(denuncia.dataDenuncia)} " />
-                            </h:column>
-
-                            <h:column>
-                                <f:facet name="header"><h:outputText value="Ação" /></f:facet>
-                                <b:button value="Em Andamento" styleClass="btn-primary" 
-                                          style="padding: 5px 10px; font-size: 10px;"/>
-                                <b:button value="Finalizado" styleClass="btn-success" 
-                                         style="padding: 5px 10px; font-size: 10px;" />
-                            </h:column>
-                        </h:dataTable>
+                            </p:column>
+                            <p:column headerText="Status">
+                                <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
+                            </p:column>
+                            <p:column headerText="Data">
+                                <h:outputText value="#{denuncia.dataDenuncia}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+                                </h:outputText>
+                            </p:column>
+                            
+                        </p:dataTable>
                     </b:row>
                 </b:panel>
             </b:panelGrid>

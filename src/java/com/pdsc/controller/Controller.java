@@ -66,7 +66,7 @@ private static final String TAG = Controller.class.getSimpleName();
         }
     }
 
-    public List read(String query, Class c) {
+    public <T> List<T> read(String query, Class c) {
         List list = null;
         try {
             EntityManager em = emf.createEntityManager();

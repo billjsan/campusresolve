@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import javax.persistence.EntityManager;
 
 /**
  *
@@ -82,6 +83,21 @@ public class DenunciaController extends Controller {
             return false;
         }
         return true;
+    }
+    
+    public String getNumeroDenunciaPorTipoString(String tipo) {
+        String result = "0";
+        try {
+            EntityManager em = emf.createEntityManager();
+            Long count = (Long) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia")
+                                   .setParameter("tipoDenuncia", tipo)
+                                   .getSingleResult();
+            em.close();
+            result = count.toString();
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em getNumeroDenunciaPorTipoString() " + e.getMessage());
+        }
+        return result;
     }
 
     private boolean localDenunciaEValido(String loc, FacesContext context) {
