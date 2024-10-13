@@ -132,12 +132,14 @@
                                  value="#{denunciaController.denuncia.localDenuncia}"  />
                     <b:dateTimePicker value="#{denunciaController.denuncia.dataDenuncia}"
                                       label="Data/Hora"
+                                      placeholder="Data/Hora da ocorrência" 
                                       mode="popup"
                                       required="true"
                                       format="DD/MM/YYYY HH:mm" 
                                       locale="pt" />
                     <b:inputTextarea label="Descrição" 
                                      required="true" 
+                                     placeholder="Descrição da ocorrência" 
                                      rows="4" 
                                      maxlength="5000" 
                                      value="#{denunciaController.denuncia.descricaoDenuncia}"
@@ -160,49 +162,108 @@
                       hideEffect="fade"
                       closable="true"
                       draggable="false">
-                <b:panelGrid columns="2">
-                    <h:outputText value="Identificador:" />
-                    <h:outputText value="#{denunciaController.denunciaSelecionada.id}" />
-
-                    <h:outputText value="Tipo de Manifestação:" />
-                    <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.tipoDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
-                        <f:selectItem itemLabel="Elogio" itemValue="Elogio" />
-                        <f:selectItem itemLabel="Reclamação" itemValue="Reclamação" />
-                        <f:selectItem itemLabel="Solicitação" itemValue="Solicitação" />
-                        <f:selectItem itemLabel="Sugestão" itemValue="Sugestão" />
-                        <f:selectItem itemLabel="Denúncia" itemValue="Denúncia" />
-                    </b:selectOneMenu>
-
-                    <h:outputText value="Assunto:" />
-                    <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.assundoDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
-                        <f:selectItem itemLabel="Assédio" itemValue="Assedio" />
-                        <f:selectItem itemLabel="Agradecimento" itemValue="Agradecimento" />
-                        <f:selectItem itemLabel="Alimentação" itemValue="Alimentação" />
-                        <f:selectItem itemLabel="Bolsas" itemValue="Bolsas" />
-                        <f:selectItem itemLabel="Conduta Docente" itemValue="Conduta Docente" />
-                        <f:selectItem itemLabel="Cursos" itemValue="Cursos" />
-                        <f:selectItem itemLabel="Descriminação" itemValue="Descriminação" />
-                        <f:selectItem itemLabel="Outro" itemValue="Outro" />
-                    </b:selectOneMenu>
-
-                    <h:outputText value="Descrição:" />
-                    <b:inputTextarea value="#{denunciaController.denunciaSelecionada.descricaoDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" rows="4" maxlength="250" />
-
-                    <h:outputText value="Local do Fato:" />
-                    <b:inputText value="#{denunciaController.denunciaSelecionada.localDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" maxlength="50" />
-
-                    <h:outputText value="Data/Hora:" />
-                    <b:dateTimePicker value="#{denunciaController.denunciaSelecionada.dataDenuncia}" disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}"
-                                      mode="popup" format="DD/MM/YYYY HH:mm" locale="pt" />
-
-                    <h:outputText value="Status:" />
-                    <h:outputText value="#{denunciaController.denunciaSelecionada.estadoDenunciaAmigavel}" />
+                <b:panelGrid columns="1">
+                    <b:panelGrid columns="2"
+                                 style="margin-bottom: 10px;">
+                        <p:panel>
+                            <h:outputText value="Id da Denúncia:"
+                                          style="font-weight: bold; font-size:16px; margin-right: 5px;"/>
+                            <h:outputText value="#{denunciaController.denunciaSelecionada.id}" />
+                        </p:panel>
+                        <p:panel>
+                            <h:outputText value="Status da Denúncia:"
+                                          style="font-weight: bold; font-size:16px; margin-right: 5px;"/>
+                            <h:outputText value="#{denunciaController.denunciaSelecionada.estadoDenunciaAmigavel}" />
+                        </p:panel>
+                    </b:panelGrid>
+                    <b:panelGrid columns="2"
+                                 style="margin-bottom: 10px;">
+                        <p:panel>
+                            <h:outputText value="Tipo de Manifestação:"
+                                      style="font-weight: bold; font-size:16px;"/>
+                            <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.tipoDenuncia}" 
+                                             disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
+                                <f:selectItem itemLabel="Elogio" 
+                                              itemValue="Elogio" />
+                                <f:selectItem itemLabel="Reclamação" 
+                                              itemValue="Reclamação" />
+                                <f:selectItem itemLabel="Solicitação" 
+                                              itemValue="Solicitação" />
+                                <f:selectItem itemLabel="Sugestão" 
+                                              itemValue="Sugestão" />
+                                <f:selectItem itemLabel="Denúncia" 
+                                              itemValue="Denúncia" />
+                            </b:selectOneMenu>
+                        </p:panel>
+                        <p:panel>
+                            <h:outputText value="Assunto:"
+                                      style="font-weight: bold; font-size:16px;"/>
+                            <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.assundoDenuncia}" 
+                                             disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
+                                <f:selectItem itemLabel="Assédio" 
+                                              itemValue="Assedio" />
+                                <f:selectItem itemLabel="Agradecimento" 
+                                              itemValue="Agradecimento" />
+                                <f:selectItem itemLabel="Alimentação" 
+                                              itemValue="Alimentação" />
+                                <f:selectItem itemLabel="Bolsas" 
+                                              itemValue="Bolsas" />
+                                <f:selectItem itemLabel="Conduta Docente" 
+                                              itemValue="Conduta Docente" />
+                                <f:selectItem itemLabel="Cursos" 
+                                              itemValue="Cursos" />
+                                <f:selectItem itemLabel="Descriminação" 
+                                              itemValue="Descriminação" />
+                                <f:selectItem itemLabel="Outro" 
+                                              itemValue="Outro" />
+                            </b:selectOneMenu>
+                        </p:panel>
+                    </b:panelGrid>
+                    <b:panelGrid columns="2"
+                                 style="margin-bottom: 10px;">
+                        <p:panel>
+                            <h:outputText value="Local do Fato:"
+                                      style="font-weight: bold; font-size:16px;"/>
+                            <b:inputText value="#{denunciaController.denunciaSelecionada.localDenuncia}" 
+                                     disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
+                                     maxlength="50" />
+                        </p:panel>
+                        <p:panel>
+                            <h:outputText value="Data/Hora:"
+                                      style="font-weight: bold; font-size:16px;"/>
+                            <b:dateTimePicker value="#{denunciaController.denunciaSelecionada.dataDenuncia}" 
+                                          disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}"
+                                          style="margin-bottom: 15px;"
+                                          mode="popup" 
+                                          format="DD/MM/YYYY HH:mm" 
+                                          locale="pt" />
+                        </p:panel>
+                    </b:panelGrid>
+                        <p:panel>
+                            <h:outputText value="Descrição:"
+                                      style="font-weight: bold; font-size:16px;"/>
+                            <b:inputTextarea value="#{denunciaController.denunciaSelecionada.descricaoDenuncia}" 
+                                         style="height: 400px;"
+                                         disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
+                                         rows="4" 
+                                         maxlength="5000" />
+                        </p:panel>
                 </b:panelGrid>
-                <b:commandButton value="Salvar" action="#{denunciaController.atualizarDenuncia()}" rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
-                <b:commandButton value="Excluir" action="#{denunciaController.excluirDenuncia()}" rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
-                <p:commandButton value="Fechar" icon="ui-icon-close" onclick="PF('modalDetalhes').hide()" type="button" />
+                <b:commandButton value="Salvar" 
+                                 style="float: right;"
+                                 action="#{denunciaController.atualizarDenuncia()}" 
+                                 rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
+                <b:commandButton value="Excluir" 
+                                 style="float: right;"
+                                 action="#{denunciaController.excluirDenuncia()}" 
+                                 rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
+                <b:commandButton value="Fechar" 
+                                 style="float: right;"
+                                 icon="ui-icon-close" 
+                                 onclick="PF('modalDetalhes').hide()" 
+                                 type="button" />
+ 
             </p:dialog>
         </h:form>
-
     </h:body>
 </html>
