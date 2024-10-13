@@ -5,43 +5,67 @@
       xmlns:b="http://bootsfaces.net/ui"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Campus Resolve #{loginController.usuarioLogado.nome}</title>
     </h:head>
     <h:body>
-        <b:growl id="growMenu" delay="4000" show-detail="true" show-summary="true"/>
+        <b:growl id="growMenu" 
+                 delay="4000" 
+                 show-detail="true" 
+                 show-summary="true"/>
         <b:form id="formMenu">
 
-            <b:navBar brand="Campus Resolve" brandHref="indexUsuario.xhtml" fluid="true">
+            <b:navBar brand="Campus Resolve" 
+                      brandHref="indexUsuario.xhtml" 
+                      fluid="true">
                 <b:navbarLinks>
-                    <b:navLink value="Reportar Ocorrência" href="#" onclick="$('.mRegistrarDenuncia').modal('show')"></b:navLink>   
+                    <b:navLink value="Reportar Ocorrência" 
+                               href="#" 
+                               onclick="$('.mRegistrarDenuncia').modal('show')"></b:navLink>   
                 </b:navbarLinks>
                 <b:navbarLinks pull="right">
-                    <b:navLink value="sair" iconAwesome="fa-power-off" onclick="location.href = 'login.xhtml';ajax:loginController.logout()"></b:navLink>  
+                    <b:navLink value="sair" 
+                               iconAwesome="fa-power-off" 
+                               onclick="location.href = 'login.xhtml';ajax:loginController.logout()"></b:navLink>  
                 </b:navbarLinks>
             </b:navBar>
 
             <b:panelGrid colSpans="2,10">
-                <b:panel style="height: 280px; margin-right: 10px; margin-left: 10px; text-align: center;" title="Bem-Vindo" collapsible="false">
+                <b:panel style="height: 280px; margin-right: 10px; margin-left: 10px; text-align: center;" 
+                         title="Bem-Vindo" 
+                         collapsible="false">
 
-                    <b:row style="text-align: center;"> <h:graphicImage value="resources/icone-de-perfil2.png" style="width: 100px; height: 100px; margin-right: 5px; " /></b:row>
+                    <b:row style="text-align: center;"> <h:graphicImage 
+                            value="resources/icone-de-perfil2.png" 
+                            style="width: 100px; height: 100px; margin-right: 5px; " /></b:row>
                     <f:facet name="footer">
-                        <b:label value="Matrícula: " style="font-weight: bold; margin-right: 3px;" />
+                        <b:label value="Matrícula: " 
+                                 style="font-weight: bold; margin-right: 3px;" />
                         <b:row style="margin: 3px;">               
-                            <h:outputText value=" #{loginController.usuarioLogado.matricula} " style="margin-right: 3px" />
+                            <h:outputText value=" #{loginController.usuarioLogado.matricula} " 
+                                          style="margin-right: 3px" />
                         </b:row>
-                        <b:label value="Nome " style="font-weight: bold; margin-right: 3px;" />
+                        <b:label value="Nome " 
+                                 style="font-weight: bold; margin-right: 3px;" />
                         <b:row style="margin: 3px;">               
-                            <h:outputText value=" #{loginController.usuarioLogado.nome} " style="margin-right: 3px" />
+                            <h:outputText value=" #{loginController.usuarioLogado.nome} " 
+                                          style="margin-right: 3px" />
                         </b:row>
                     </f:facet>
                 </b:panel>
 
-                <b:panel style="margin-right: 10px; margin-left: 10px;" title="Minhas Ocorrências" collapsible="false">
+                <b:panel style="margin-right: 10px; margin-left: 10px;" 
+                         title="Minhas Ocorrências" 
+                         collapsible="false">
                     <b:row styleClass="table-responsive">
-                        <p:dataTable styleClass="table table-striped" value="#{denunciaController.listarDenunciasPorUsuario(loginController.usuarioLogado)}" var="denuncia"
-                                     paginator="true" rows="10" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="10,20,30">
+                        <p:dataTable styleClass="table table-striped" 
+                                     value="#{denunciaController.listarDenunciasPorUsuario(loginController.usuarioLogado)}" 
+                                     var="denuncia"
+                                     paginator="true" rows="10" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+                                     rowsPerPageTemplate="10,20,30">
                             <p:column headerText="Identificador">
                                 <h:outputText value=" #{denuncia.id} " />
                             </p:column>
@@ -66,10 +90,14 @@
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Ação">
-                                <b:commandButton value="Detalhes" styleClass="btn-primary" 
+                                <b:commandButton value="Detalhes" 
+                                                 styleClass="btn-primary" 
                                                  style="padding: 5px 10px; font-size: 10px; margin-left: 5px; margin-right: 5px"
-                                                 update=":formModalDetalhes" oncomplete="PF('modalDetalhes').show()" process="@this">
-                                    <f:setPropertyActionListener target="#{denunciaController.denunciaSelecionada}" value="#{denuncia}" />
+                                                 update=":formModalDetalhes" 
+                                                 oncomplete="PF('modalDetalhes').show()" 
+                                                 process="@this">
+                                    <f:setPropertyActionListener target="#{denunciaController.denunciaSelecionada}" 
+                                                                 value="#{denuncia}" />
                                 </b:commandButton>
                             </p:column>
                         </p:dataTable>
@@ -157,112 +185,128 @@
                       widgetVar="modalDetalhes"
                       modal="true"
                       resizable="false"
-                      width="800"
                       showEffect="fade"
                       hideEffect="fade"
                       closable="true"
                       draggable="false">
-                <b:panelGrid columns="1">
-                    <b:panelGrid columns="2"
-                                 style="margin-bottom: 10px;">
-                        <p:panel>
-                            <h:outputText value="Id da Denúncia:"
-                                          style="font-weight: bold; font-size:16px; margin-right: 5px;"/>
-                            <h:outputText value="#{denunciaController.denunciaSelecionada.id}" />
-                        </p:panel>
-                        <p:panel>
-                            <h:outputText value="Status da Denúncia:"
-                                          style="font-weight: bold; font-size:16px; margin-right: 5px;"/>
-                            <h:outputText value="#{denunciaController.denunciaSelecionada.estadoDenunciaAmigavel}" />
-                        </p:panel>
-                    </b:panelGrid>
-                    <b:panelGrid columns="2"
-                                 style="margin-bottom: 10px;">
-                        <p:panel>
-                            <h:outputText value="Tipo de Manifestação:"
-                                      style="font-weight: bold; font-size:16px;"/>
-                            <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.tipoDenuncia}" 
-                                             disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
-                                <f:selectItem itemLabel="Elogio" 
-                                              itemValue="Elogio" />
-                                <f:selectItem itemLabel="Reclamação" 
-                                              itemValue="Reclamação" />
-                                <f:selectItem itemLabel="Solicitação" 
-                                              itemValue="Solicitação" />
-                                <f:selectItem itemLabel="Sugestão" 
-                                              itemValue="Sugestão" />
-                                <f:selectItem itemLabel="Denúncia" 
-                                              itemValue="Denúncia" />
-                            </b:selectOneMenu>
-                        </p:panel>
-                        <p:panel>
-                            <h:outputText value="Assunto:"
-                                      style="font-weight: bold; font-size:16px;"/>
-                            <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.assundoDenuncia}" 
-                                             disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
-                                <f:selectItem itemLabel="Assédio" 
-                                              itemValue="Assedio" />
-                                <f:selectItem itemLabel="Agradecimento" 
-                                              itemValue="Agradecimento" />
-                                <f:selectItem itemLabel="Alimentação" 
-                                              itemValue="Alimentação" />
-                                <f:selectItem itemLabel="Bolsas" 
-                                              itemValue="Bolsas" />
-                                <f:selectItem itemLabel="Conduta Docente" 
-                                              itemValue="Conduta Docente" />
-                                <f:selectItem itemLabel="Cursos" 
-                                              itemValue="Cursos" />
-                                <f:selectItem itemLabel="Descriminação" 
-                                              itemValue="Descriminação" />
-                                <f:selectItem itemLabel="Outro" 
-                                              itemValue="Outro" />
-                            </b:selectOneMenu>
-                        </p:panel>
-                    </b:panelGrid>
-                    <b:panelGrid columns="2"
-                                 style="margin-bottom: 10px;">
-                        <p:panel>
-                            <h:outputText value="Local do Fato:"
-                                      style="font-weight: bold; font-size:16px;"/>
-                            <b:inputText value="#{denunciaController.denunciaSelecionada.localDenuncia}" 
-                                     disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
-                                     maxlength="50" />
-                        </p:panel>
-                        <p:panel>
-                            <h:outputText value="Data/Hora:"
-                                      style="font-weight: bold; font-size:16px;"/>
-                            <b:dateTimePicker value="#{denunciaController.denunciaSelecionada.dataDenuncia}" 
-                                          disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}"
-                                          style="margin-bottom: 15px;"
-                                          mode="popup" 
-                                          format="DD/MM/YYYY HH:mm" 
-                                          locale="pt" />
-                        </p:panel>
-                    </b:panelGrid>
-                        <p:panel>
-                            <h:outputText value="Descrição:"
-                                      style="font-weight: bold; font-size:16px;"/>
-                            <b:inputTextarea value="#{denunciaController.denunciaSelecionada.descricaoDenuncia}" 
-                                         style="height: 400px;"
-                                         disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
-                                         rows="4" 
-                                         maxlength="5000" />
-                        </p:panel>
-                </b:panelGrid>
-                <b:commandButton value="Salvar" 
-                                 style="float: right;"
-                                 action="#{denunciaController.atualizarDenuncia()}" 
-                                 rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
-                <b:commandButton value="Excluir" 
-                                 style="float: right;"
-                                 action="#{denunciaController.excluirDenuncia()}" 
-                                 rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
-                <b:commandButton value="Fechar" 
-                                 style="float: right;"
-                                 icon="ui-icon-close" 
-                                 onclick="PF('modalDetalhes').hide()" 
-                                 type="button" />
- 
+                <div style="max-height: 800px; max-width: 1100px; overflow-y: auto;">
+                    <b:panel style="width: 1000px; margin-right: 10px;">
+                        <b:panelGrid columns="1">
+                            <b:panelGrid columns="2"
+                                         style="margin-bottom: 10px;">
+                                <p:panel>
+                                    <h:outputText value="Id da Denúncia:"
+                                                  style="font-weight: bold; font-size:16px; margin-right: 5px;"/>
+                                    <h:outputText value="#{denunciaController.denunciaSelecionada.id}" />
+                                </p:panel>
+                                <p:panel>
+                                    <h:outputText value="Status da Denúncia:"
+                                                  style="font-weight: bold; font-size:16px; margin-right: 5px;"/>
+                                    <h:outputText value="#{denunciaController.denunciaSelecionada.estadoDenunciaAmigavel}" />
+                                </p:panel>
+                            </b:panelGrid>
+                            <b:panelGrid columns="2"
+                                         style="margin-bottom: 10px;">
+                                <p:panel>
+                                    <h:outputText value="Tipo de Manifestação:"
+                                              style="font-weight: bold; font-size:16px;"/>
+                                    <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.tipoDenuncia}" 
+                                                     disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
+                                        <f:selectItem itemLabel="Elogio" 
+                                                      itemValue="Elogio" />
+                                        <f:selectItem itemLabel="Reclamação" 
+                                                      itemValue="Reclamação" />
+                                        <f:selectItem itemLabel="Solicitação" 
+                                                      itemValue="Solicitação" />
+                                        <f:selectItem itemLabel="Sugestão" 
+                                                      itemValue="Sugestão" />
+                                        <f:selectItem itemLabel="Denúncia" 
+                                                      itemValue="Denúncia" />
+                                    </b:selectOneMenu>
+                                </p:panel>
+                                <p:panel>
+                                    <h:outputText value="Assunto:"
+                                              style="font-weight: bold; font-size:16px;"/>
+                                    <b:selectOneMenu value="#{denunciaController.denunciaSelecionada.assundoDenuncia}" 
+                                                     disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}">
+                                        <f:selectItem itemLabel="Assédio" 
+                                                      itemValue="Assedio" />
+                                        <f:selectItem itemLabel="Agradecimento" 
+                                                      itemValue="Agradecimento" />
+                                        <f:selectItem itemLabel="Alimentação" 
+                                                      itemValue="Alimentação" />
+                                        <f:selectItem itemLabel="Bolsas" 
+                                                      itemValue="Bolsas" />
+                                        <f:selectItem itemLabel="Conduta Docente" 
+                                                      itemValue="Conduta Docente" />
+                                        <f:selectItem itemLabel="Cursos" 
+                                                      itemValue="Cursos" />
+                                        <f:selectItem itemLabel="Descriminação" 
+                                                      itemValue="Descriminação" />
+                                        <f:selectItem itemLabel="Outro" 
+                                                      itemValue="Outro" />
+                                    </b:selectOneMenu>
+                                </p:panel>
+                            </b:panelGrid>
+                            <b:panelGrid columns="2"
+                                         style="margin-bottom: 10px;">
+                                <p:panel>
+                                    <h:outputText value="Local da Ocorrência:"
+                                              style="font-weight: bold; font-size:16px;"/>
+                                    <b:inputText value="#{denunciaController.denunciaSelecionada.localDenuncia}" 
+                                             disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
+                                             maxlength="50" />
+                                </p:panel>
+                                <p:panel>
+                                    <h:outputText value="Data/Horada Ocorrência:"
+                                              style="font-weight: bold; font-size:16px;"/>
+                                    <b:dateTimePicker value="#{denunciaController.denunciaSelecionada.dataDenuncia}" 
+                                                  disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}"
+                                                  style="margin-bottom: 15px;"
+                                                  mode="popup" 
+                                                  format="DD/MM/YYYY HH:mm" 
+                                                  locale="pt" />
+                                </p:panel>
+                            </b:panelGrid>
+                                <p:panel>
+                                    <h:outputText value="Descrição da Ocorrência:"
+                                              style="font-weight: bold; font-size:16px;"/>
+                                    <b:inputTextarea value="#{denunciaController.denunciaSelecionada.descricaoDenuncia}" 
+                                                 style="height: 300px;"
+                                                 disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
+                                                 rows="4" 
+                                                 maxlength="5000" />
+                                    <h:outputText value="Informações Adicionais:"
+                                              style="font-weight: bold; font-size:16px;"
+                                              rendered="#{denunciaController.denunciaSelecionada.informacoesAdicionais.size() > 0}" />
+                                    <ui:repeat value="#{denunciaController.denunciaSelecionada.informacoesAdicionais}" var="campo">
+                                        <p:panel>
+                                            <b:inputTextarea value="#{campo.informacao}" 
+                                                     style="margin-bottom: 10px; height: 300px;"
+                                                     disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
+                                                     rows="3" 
+                                                     maxlength="5000"/>
+                                            <h:outputText value="Modificado em: #{campo.dataModificacaoFormatada}"
+                                              style="font-size:14px;"/>
+                                        </p:panel>
+                                    </ui:repeat>
+                                </p:panel>
+                        </b:panelGrid>
+                        <b:commandButton value="Salvar" 
+                                         style="float: right;"
+                                         action="#{denunciaController.atualizarDenuncia()}" 
+                                         rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
+                        <b:commandButton value="Excluir" 
+                                         style="float: right;"
+                                         action="#{denunciaController.excluirDenuncia()}" 
+                                         rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
+                        <b:commandButton value="Fechar" 
+                                         style="float: right;"
+                                         icon="ui-icon-close" 
+                                         onclick="PF('modalDetalhes').hide()" 
+                                         type="button" />
+                    </b:panel>
+                </div>
             </p:dialog>
         </h:form>
     </h:body>
