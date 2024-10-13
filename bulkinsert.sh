@@ -80,7 +80,7 @@ declare -a descricoes=("$ASSEDIO" "$AGRADECIMENTO" "$ALIMENTACAO" "$CONDUTA" "$D
 # Assunto
 declare -a assunto=("Assedio" "Agradecimento" "Alimentação" "Bolsas" "Conduta Docente" "Descriminação" "Outro")
 
-# Inserir 50 denúncias
+# Inserir 100 denúncias
 for i in {1..100}
 do
     tipo_denuncia=${tipos[$((i % 5))]}
@@ -94,11 +94,58 @@ do
 
     insert_denuncia_query="INSERT INTO DENUNCIA (ASSUNTO_DENUNCIA, DATA_CRIACAO_DENUNCIA, DATA_DENUNCIA, DESCRICAO_DENUNCIA, ESTADO_DENUNCIA, LOCAL_DENUNCIA, TIPO_DENUNCIA, SERVIDOR_ID, USUARIO_ID) 
                            VALUES ('$assunto_denuncia', '$data_criacao', '$data_denuncia', '$descricao_denuncia', '$estado_denuncia', '$local_denuncia', '$tipo_denuncia', $servidor_id, $user_id);"
-    
+
     # Executa a inserção da denúncia
     mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -e "$insert_denuncia_query"
 done
-
 echo "100 denúncias inseridas com sucesso."
+
+########################################## INFO EXTRAS ############################################
+
+INFO1="A presente ocorrência relata uma situação que envolve procedimentos internos que precisam ser avaliados. O objetivo principal é garantir a conformidade com as políticas institucionais e evitar possíveis falhas no processo. A documentação anexa apresenta detalhes completos do ocorrido, incluindo todas as etapas envolvidas no processo de análise e resolução. A colaboração de todos os envolvidos será essencial para uma solução rápida e eficiente."
+INFO2="Este relato apresenta um evento ocorrido fora das dependências da instituição, mas que teve impacto direto em atividades relacionadas. A ocorrência foi registrada no dia XX/XX/XXXX às XX
+, e os envolvidos já foram informados sobre a necessidade de providências imediatas. Aguardamos o retorno oficial para dar andamento aos procedimentos necessários e documentar as ações subsequentes."
+INFO3="Durante o último período, notamos algumas falhas nos serviços prestados, particularmente no atendimento ao público. Foram identificados casos de atrasos nas respostas e orientações imprecisas. Sugerimos que uma análise seja realizada para verificar possíveis gargalos operacionais e otimizar a comunicação entre setores. Uma pesquisa de satisfação seria uma ferramenta útil para medir a percepção dos usuários e identificar pontos de melhoria. Agradecemos desde já a atenção dedicada ao caso e estamos à disposição para colaborar na implementação das ações necessárias."
+INFO4="Por meio deste, solicitamos a disponibilização de recursos adicionais para a execução das atividades programadas para o próximo trimestre. A necessidade identificada inclui materiais específicos e a contratação temporária de serviços especializados, que são essenciais para garantir a entrega dos projetos dentro dos prazos estabelecidos. A falta desses recursos pode comprometer a eficiência e a qualidade das entregas. Anexamos um relatório detalhado com o levantamento das necessidades e as justificativas correspondentes. Contamos com a análise e aprovação das solicitações o mais breve possível para evitar atrasos no cronograma."
+INFO5="No dia XX/XX/XXXX, por volta das XX
+, foi registrada uma ocorrência significativa que precisa ser tratada com urgência. Esta ocorrência envolveu várias áreas da organização, resultando em impactos que ainda estão sendo avaliados. Inicialmente, a situação parecia estar sob controle, mas, com o decorrer do tempo, notamos que algumas questões ficaram pendentes, gerando desconforto entre os envolvidos. Diante disso, é fundamental que todas as informações sejam cuidadosamente registradas para que possamos tomar as medidas adequadas.
+
+Durante a primeira etapa da investigação, conversamos com as partes envolvidas e reunimos depoimentos que fornecem uma visão mais clara do que ocorreu. A análise preliminar sugere que alguns procedimentos padrão não foram seguidos conforme o esperado. Além disso, houve falhas na comunicação interna que contribuíram para a escalada do problema. Identificamos também a necessidade de reforçar a capacitação da equipe em determinados processos para evitar que situações semelhantes se repitam no futuro.
+
+Como parte do plano de ação, sugerimos as seguintes medidas:
+
+Revisão de Procedimentos Internos: Avaliar as falhas no fluxo atual e realizar ajustes conforme necessário.
+Treinamento da Equipe: Realizar workshops e cursos para garantir que todos conheçam e sigam os processos definidos.
+Melhoria na Comunicação: Implementar ferramentas que facilitem a troca de informações entre setores.
+Monitoramento Contínuo: Estabelecer métricas para acompanhar a evolução e garantir a melhoria contínua.
+A ocorrência será acompanhada de perto nas próximas semanas para garantir que todas as ações planejadas sejam implementadas corretamente. Além disso, faremos reuniões periódicas com os responsáveis por cada área para avaliar o progresso e discutir ajustes que possam ser necessários. O envolvimento de todos é fundamental para a solução efetiva e para o fortalecimento da confiança interna.
+
+Estamos à disposição para fornecer mais detalhes, caso necessário, e aguardamos orientações adicionais quanto aos próximos passos. Uma comunicação oficial será emitida assim que todas as informações forem analisadas e consolidadas. Contamos com a colaboração de todos para resolver esta situação da melhor maneira possível e para garantir que erros semelhantes não ocorram novamente no futuro."
+
+declare -a infos=("$INFO1" "$INFO2" "$INFO3" "$INFO4" "$INFO5")
+
+query_get_ids="SELECT ID FROM DENUNCIA LIMIT 30;"
+mapfile -t denuncia_ids < <(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -N -e "$query_get_ids")
+if [ ${#denuncia_ids[@]} -lt 30 ]; then
+	echo "Erro: Menos de 30 IDs encontrados na tabela DENUNCIA."
+	exit 1
+fi
+
+
+# Inserir 100 informacoes dicionais as denúncias
+for i in {1..100}
+do
+    data_modificacao=$(date +'%Y-%m-%d %H:%M:%S')
+    id_denuncia=${denuncia_ids[$((i % ${#denuncia_ids[@]}))]}
+    info_adicional=${infos[$((i % 5))]}
+    
+    insert_info_query="INSERT INTO INFORMACAOADICIONAL (DATA_MODIFICACAO_INFORMACAO_ADICIONAL, INFORMACAO_ADICIONAL, DENUNCIA_ID) VALUES ('$data_modificacao', '$info_adicional', '$id_denuncia');"
+
+    # Executa a inserção das infos
+    mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -e "$insert_info_query"
+done
+
+echo "100 informações extras inseridas com sucesso."
+
 echo "Usuario: Matricula:$MATRICULA Senha:$SENHA"
 echo "Servidor: Matricula:$MATRICULA_SERVIDOR Senha:$SENHA_SERVIDOR"
