@@ -1,20 +1,21 @@
 package com.pdsc.controller;
 
 import com.pdsc.model.Servidor;
+import com.pdsc.util.Logging;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.EntityManager;
 
-/**
- * Controlador para gerenciamento de Servidores.
- */
+
 @ManagedBean
 @SessionScoped
 public class ServidorController extends Controller {
 
+    private static final String TAG = ServidorController.class.getSimpleName();
     private Servidor servidorCadastro;
     private Servidor selection;
 
@@ -24,27 +25,38 @@ public class ServidorController extends Controller {
         this.selection = new Servidor();
     }
 
-    /**
-     * Insere um novo servidor no banco de dados após validação.
-     * 
-     * @param confirma Senha para confirmação.
-     */
     public void inserir(String confirma) {
         FacesContext context = FacesContext.getCurrentInstance();
-
         if (!servidorCadastro.getSenha().equals(confirma)) {
             context.addMessage("formRegistroServidor:senha",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "A senha e a confirmação não são iguais!"));
             return;
         }
 
+        if (ePrimeiroServidor()) {
+            servidorCadastro.setFuncao(Servidor.ADM);
+        }
+        
         try {
             insert(servidorCadastro);
-            servidorCadastro = new Servidor(); // Limpa o formulário
+            servidorCadastro = new Servidor();
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso!", "Servidor cadastrado com sucesso!"));
         } catch (Exception e) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "Não foi possível cadastrar o servidor."));
-            e.printStackTrace(); // Log de erro para diagnóstico
+            Logging.d(TAG, "erro ao inserir servidor " + e.getMessage());
+        }
+    }
+    
+    private boolean ePrimeiroServidor() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            Long count = (Long) em.createQuery("SELECT COUNT(s) FROM Servidor s").getSingleResult();
+            return count == 0;
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em verificar o banco " + e.getMessage());
+            return false;
+        } finally {
+            em.close();
         }
     }
 

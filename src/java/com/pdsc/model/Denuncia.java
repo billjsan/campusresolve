@@ -1,10 +1,14 @@
 package com.pdsc.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -14,51 +18,81 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 
-@SuppressWarnings("SerializableClass")
+/**
+ *
+ * @author Willian Santos
+ */
+
 @Entity
-public class Denuncia {
+public class Denuncia implements Serializable { 
+    
+    @Transient
+    private final String NOVA = "Novo";
+    @Transient
+    private final String PROCESSAMENTO = "Em processamento";
+    @Transient
+    private final String ENCAMINHADO = "encaminhado";
+    @Transient
+    private final String RESOLVIDO = "resolvido";
+    @Transient
+    private final String ARQUIVADO = "Arquivado";
+    @Transient
+    private final String AGUARDANDO = "Aguardando informação";
+    @Transient
+    private final String INVALIDO = "Invalido";
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     @Size(min = 2, max = 50)
-    private String setorDenuncia;
-
-    @Size(min = 2, max = 50)
     @NotNull
+    @Column(length=50, nullable = false, name = "TIPO_DENUNCIA")
     private String tipoDenuncia;
 
     @NotNull
     @Size(min = 2, max = 100)
+    @Column(length=50, nullable = false, name = "ASSUNTO_DENUNCIA")
     private String assundoDenuncia;
 
     @NotNull
     @Temporal(TemporalType.DATE)
+    @Column(nullable = false, name = "DATA_DENUNCIA")
     private Date dataDenuncia;
 
     @NotNull
     @Size(min = 2, max = 50)
+    @Column(length=50, nullable = false, name = "LOCAL_DENUNCIA")
     private String localDenuncia;
 
     @NotNull
-    @Size(min = 50, max = 5000)
+    @Column(length=5500, nullable = false, name = "DESCRICAO_DENUNCIA")
     private String descricaoDenuncia;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    @Column(nullable = false, name = "DATA_CRIACAO_DENUNCIA")
     private Date dataCriacao;
 
-    @Pattern(regexp = "[N|P|E|R|A]", message = "Estado da denúncia inválido")
-    private String estadoDenuncia; /* novo N | processando P | encaminhado E | resolvido R | arquivado A */
+    // novo N | processando P | encaminhado E | resolvido R | arquivado A | I aguardando informação
+    @Pattern(regexp = "[N|P|E|R|A|I]", message = "Estado da denúncia inválido")
+    @NotNull
+    @Size(min = 1, max = 1)
+    @Column(length=1, nullable = false, name = "ESTADO_DENUNCIA")
+    private String estadoDenuncia; 
 
-    @Transient
-    private String estadoDenunciaAmigavel;
-    
     @ManyToOne
+    @NotNull
+    @JoinColumn(name = "SERVIDOR_ID", nullable = false)
     private Servidor servidor;
 
     @ManyToOne
+    @NotNull
+    @JoinColumn(name = "USUARIO_ID", nullable = false)
     private Usuario usuario;
+    
+    @Transient
+    private String estadoDenunciaAmigavel;
     
     @Transient
     private String descricaoCurta;
@@ -84,46 +118,45 @@ public class Denuncia {
     }
     
     public String getEstadoDenunciaAmigavel() {
-        String invalid = "unknown";
-        if(estadoDenuncia != null) {
-            switch(estadoDenuncia) {
-                case "N":
-                    return "Nova";
-                case "P":
-                    return "Em processamento";
-                case "E":
-                    return "encaminhado";
-                case "R":
-                    return "resolvido";
-                case "A":
-                    return "Arquivado";
-                default:
-                    return invalid;
-            }
+        switch(estadoDenuncia) {
+            case "N":
+                return NOVA;
+            case "P":
+                return PROCESSAMENTO;
+            case "E":
+                return ENCAMINHADO;
+            case "R":
+                return RESOLVIDO;
+            case "A":
+                return ARQUIVADO;
+            case "I":
+                return AGUARDANDO;
+            default:
+                return INVALIDO;
         }
-        return invalid;       
     }
     
     public void setEstadoDenunciaAmigavel(String estado) {
-        String invalid = "unknown";
         switch(estado) {
             case "N":
-                estadoDenunciaAmigavel = "Novo";
+                estadoDenunciaAmigavel = NOVA;
                 break;
             case "P":
-                estadoDenunciaAmigavel =  "processando";
+                estadoDenunciaAmigavel =  PROCESSAMENTO;
                 break;
             case "E":
-                estadoDenunciaAmigavel =  "encaminhado";
+                estadoDenunciaAmigavel = ENCAMINHADO;
                 break;
             case "R":
-                estadoDenunciaAmigavel =  "resolvido";
+                estadoDenunciaAmigavel =  RESOLVIDO;
                 break;
             case "A":
-                estadoDenunciaAmigavel =  "Arquivado";
+                estadoDenunciaAmigavel =  ARQUIVADO;
                 break;
+            case "I":
+                estadoDenunciaAmigavel = AGUARDANDO;
             default:
-                estadoDenunciaAmigavel =  invalid;
+                estadoDenunciaAmigavel =  INVALIDO;
         }
     }
 
@@ -169,14 +202,6 @@ public class Denuncia {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-    }
-
-    public String getSetorDenuncia() {
-        return setorDenuncia;
-    }
-
-    public void setSetorDenuncia(String setorDenuncia) {
-        this.setorDenuncia = setorDenuncia;
     }
 
     public String getTipoDenuncia() {

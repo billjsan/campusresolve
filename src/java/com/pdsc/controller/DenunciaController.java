@@ -3,8 +3,10 @@ package com.pdsc.controller;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import com.pdsc.model.Denuncia;
+import com.pdsc.model.Servidor;
 import com.pdsc.model.Usuario;
 import com.pdsc.util.Logging;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,35 +65,106 @@ public class DenunciaController extends Controller {
     public String inserirDenuncia() {
         Logging.d(TAG, "inserirDenuncia()");
         FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            if (!descricaoEValida(denuncia.getDescricaoDenuncia(), context) ||
+                !localDenunciaEValido(denuncia.getLocalDenuncia(), context) ||
+                !dataDenunciaEValida(denuncia.getDataDenuncia(), context) ||
+                !tipoDenunciaEValida(denuncia.getTipoDenuncia(), context) ||
+                !assuntoDenunciaEValido(denuncia.getAssundoDenuncia(), context)) {
+                return null;
+            }
 
-        if (!descricaoEValida(denuncia.getDescricaoDenuncia(), context)) {
+            Servidor servidorResponsavel = getServidorResponsavel();
+            if (servidorResponsavel == null) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "Nenhum servidor responsável foi encontrado"));
+                return null;
+            }
+
+            Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                    .getExternalContext().getSession(true))
+                    .getAttribute("loginController")).getUsuarioLogado();
+
+            if (usuarioLogado == null) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "Usuário não está logado"));
+                return null;
+            }
+
+            denuncia.setUsuario(usuarioLogado);
+            denuncia.setServidor(servidorResponsavel);
+            denuncia.setEstadoDenuncia("N");
+            denuncia.setDataCriacao(new Date());
+
+            if(!eDenunciaValida(denuncia)) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "Denúncia não é valida"));
+                return null;
+            } 
+            
+            usuarioLogado.getDenuncias().add(denuncia);
+            servidorResponsavel.getDenuncias().add(denuncia);
+            
+            insert(denuncia);
+            update(usuarioLogado);
+            update(servidorResponsavel);
+
+            this.denuncia = new Denuncia();
+
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, 
+                "Sucesso!", "Denúncia registrada com sucesso."));
+            return "indexUsuario";
+
+        } catch (Exception e) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                "Erro!", "Ocorreu um problema ao registrar a denúncia."));
+            Logging.d(TAG, "erro em inserirDenuncia() " + e.getMessage());
             return null;
         }
-
-        if (!localDenunciaEValido(denuncia.getLocalDenuncia(), context)) {
-            return null;
+    }
+    
+    private boolean eDenunciaValida(Denuncia d) {
+        boolean isValid = true;
+        if (d.getAssundoDenuncia() == null) {
+            Logging.d(TAG, "Campo 'assuntoDenuncia' está nulo");
+            isValid = false;
         }
-
-        if (!dataDenunciaEValida(denuncia.getDataDenuncia(), context)) {
-            return null;
+        if (d.getDataCriacao() == null) {
+            Logging.d(TAG, "Campo 'dataCriacao' está nulo");
+            isValid = false;
         }
-
-        if (!tipoDenunciaEValida(denuncia.getTipoDenuncia(), context)) {
-            return null;
+        if (d.getDataDenuncia() == null) {
+            Logging.d(TAG, "Campo 'dataDenuncia' está nulo");
+            isValid = false;
         }
-
-        if (!assuntoDenunciaEValido(denuncia.getAssundoDenuncia(), context)) {
-            return null;
+        if (d.getDescricaoDenuncia() == null) {
+            Logging.d(TAG, "Campo 'descricaoDenuncia' está nulo");
+            isValid = false;
         }
-
-        Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
-                .getExternalContext().getSession(true))
-                .getAttribute("loginController")).getUsuarioLogado();
-        this.denuncia.setUsuario(usuarioLogado);
-        this.denuncia.setEstadoDenuncia("N");
-        insert(this.denuncia);
-        this.denuncia = new Denuncia();
-        return "indexUsuario";
+        if (d.getUsuario() == null) {
+            Logging.d(TAG, "Campo 'usuario' está nulo");
+            isValid = false;
+        }
+        if (d.getServidor() == null) {
+            Logging.d(TAG, "Campo 'servidor' está nulo");
+            isValid = false;
+        }
+        if (d.getTipoDenuncia() == null) {
+            Logging.d(TAG, "Campo 'tipoDenuncia' está nulo");
+            isValid = false;
+        }
+        if (d.getLocalDenuncia() == null) {
+            Logging.d(TAG, "Campo 'localDenuncia' está nulo");
+            isValid = false;
+        }
+        if (d.getEstadoDenuncia() == null) {
+            Logging.d(TAG, "Campo 'estadoDenuncia' está nulo");
+            isValid = false;
+        }
+        if (isValid) {
+            Logging.d(TAG, "Todos os campos foram preenchidos corretamente.");
+        }
+        return isValid;
     }
 
     public List<Denuncia> getDenunciasPorTipo(String tipo) {
@@ -106,6 +179,39 @@ public class DenunciaController extends Controller {
             Logging.d(TAG, "erro em filtrarDenuncias() " + e.getMessage());
         }
         return result;
+    }
+    
+    private Servidor getServidorResponsavel() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            List<Servidor> servidores = (List<Servidor>) em.createQuery("SELECT s FROM Servidor s").getResultList();
+            if(servidores == null || servidores.isEmpty()) {
+                Logging.d(TAG, "nenhum servidor encontrado");
+                return null;
+            }
+            List<Servidor> servidoresTriagem = new ArrayList<>();
+            servidores.stream().filter((s) -> (s.getFuncao().equals(Servidor.TRIAGEM))).forEachOrdered((s) -> {
+                servidoresTriagem.add(s);
+            });
+            
+            if(servidoresTriagem.isEmpty()) {
+                Logging.d(TAG, "nenhum servidor responsavel encontrado");
+                return null;
+            }
+            Servidor servidorResponsavel = servidoresTriagem.get(0);
+            for(Servidor r: servidoresTriagem) {
+                if(r.getDenuncias().size() < servidorResponsavel.getDenuncias().size()) {
+                    servidorResponsavel = r;
+                    return servidorResponsavel;
+                }            
+            }
+            return servidorResponsavel;
+        } catch (Exception e) {
+            Logging.d(TAG, "erro ao pegar servidor responsavel " + e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
     }
 
     public String getQuantidadeOcorrenciaPorTipoString(String tipo) {
@@ -150,14 +256,36 @@ public class DenunciaController extends Controller {
     private boolean descricaoEValida(String desc, FacesContext context) {
         if (desc == null || desc.trim().isEmpty()) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Descrição é obrigatória."));
+            Logging.d(TAG, "descrição é vazia ou nula");
             return false;
         }
-        if (desc.length() > 5000 || desc.length() < 50) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Descrição deve ter entre 50 e 5000 caracteres."));
+
+        String descricaoNormalizada = desc.trim().replaceAll("\\s+", " ");
+        Logging.d(TAG, "descricaoEValida(): tamanho normalizado: " + descricaoNormalizada.length());
+
+        try {
+            int byteLength = descricaoNormalizada.getBytes("UTF-8").length;
+            Logging.d(TAG, "Tamanho em bytes: " + byteLength);
+            if (byteLength > 5500) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "Descrição excede o limite de 5000 bytes."));
+                Logging.d(TAG, "Descrição excede 5500 bytes");
+                return false;
+            }
+        } catch (UnsupportedEncodingException e) {
+            Logging.d(TAG, "Erro ao calcular o tamanho em bytes: " + e.getMessage());
             return false;
         }
-        return true;
-    }
+
+        if (descricaoNormalizada.length() < 50) {
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                "Erro", "Descrição deve ter pelo menos 50 caracteres."));
+            Logging.d(TAG, "Descrição muito curta");
+            return false;
+        }
+
+    return true;
+}
 
     private boolean tipoDenunciaEValida(String desc, FacesContext context) {
         if (desc == null || desc.trim().isEmpty()) {

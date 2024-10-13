@@ -82,7 +82,6 @@ public class DenunciaTest {
     
     private Denuncia criarDenunciaValida() {
         Denuncia novaDenuncia = new Denuncia();
-        novaDenuncia.setSetorDenuncia(setorDenunciaValida);
         novaDenuncia.setTipoDenuncia(tipoDenunciaValida);
         novaDenuncia.setAssundoDenuncia(assundoDenunciaValida);
         novaDenuncia.setDataDenuncia(dataDenunciaValida);
@@ -101,7 +100,6 @@ public class DenunciaTest {
         TypedQuery<Denuncia> query = em.createQuery("SELECT d FROM Denuncia d WHERE d.assundoDenuncia = :assunto", Denuncia.class);
         query.setParameter("assunto", assundoDenunciaValida);
         Denuncia result = query.getSingleResult();
-        assertEquals(setorDenunciaValida, result.getSetorDenuncia());
         assertEquals(tipoDenunciaValida, result.getTipoDenuncia());
         assertEquals(assundoDenunciaValida, result.getAssundoDenuncia());
         assertNotNull(result.getDataDenuncia());
@@ -118,7 +116,6 @@ public class DenunciaTest {
     @Test(expected =ConstraintViolationException.class)
     public void testSetorInvalidoCurto() {
         Denuncia denunciaInvalida = new Denuncia();
-        denunciaInvalida.setSetorDenuncia("A");
         denunciaInvalida.setTipoDenuncia("Assédio");
         denunciaInvalida.setAssundoDenuncia("Assunto Teste");
         denunciaInvalida.setDataDenuncia(new Date());
@@ -137,7 +134,6 @@ public class DenunciaTest {
     @Test(expected = ConstraintViolationException.class)
     public void testAssuntoInvalidoCurto() {
         Denuncia denunciaInvalida = new Denuncia();
-        denunciaInvalida.setSetorDenuncia("TI");
         denunciaInvalida.setTipoDenuncia("Assédio");
         denunciaInvalida.setAssundoDenuncia("A");
         denunciaInvalida.setDataDenuncia(new Date());
@@ -156,7 +152,6 @@ public class DenunciaTest {
     @Test(expected = ConstraintViolationException.class)
     public void testEstadoDenunciaInvalido() {
         Denuncia denunciaInvalida = new Denuncia();
-        denunciaInvalida.setSetorDenuncia("TI");
         denunciaInvalida.setTipoDenuncia("Assédio");
         denunciaInvalida.setAssundoDenuncia("Assunto Teste");
         denunciaInvalida.setDataDenuncia(new Date());
@@ -175,7 +170,6 @@ public class DenunciaTest {
     @Test(expected = ConstraintViolationException.class)
     public void testTipoDenunciaInvalidoCurto() {
         Denuncia denunciaInvalida = new Denuncia();
-        denunciaInvalida.setSetorDenuncia("TI");
         denunciaInvalida.setTipoDenuncia("A");
         denunciaInvalida.setAssundoDenuncia("Assunto Teste");
         denunciaInvalida.setDataDenuncia(new Date());
@@ -194,7 +188,6 @@ public class DenunciaTest {
     @Test(expected = ConstraintViolationException.class)
     public void testLocalInvalidoCurto() {
         Denuncia denunciaInvalida = new Denuncia();
-        denunciaInvalida.setSetorDenuncia("TI");
         denunciaInvalida.setTipoDenuncia("Assédio");
         denunciaInvalida.setAssundoDenuncia("Assunto Teste");
         denunciaInvalida.setDataDenuncia(new Date());

@@ -25,7 +25,7 @@ private static final String TAG = Controller.class.getSimpleName();
         try {
             this.insert(new Object[]{objectList});
         } catch(Exception e){
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG, "insert(): " + e.getMessage());
         }
     }
 
@@ -40,7 +40,7 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
             em.close();
         } catch(Exception e){
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG, "insert(): " + e.getMessage());
         }
     }
 
@@ -48,7 +48,7 @@ private static final String TAG = Controller.class.getSimpleName();
         try {
             this.update(new Object[]{objectList});
         } catch(Exception e){
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG, "update(): " + e.getMessage());
         }
     }
 
@@ -62,7 +62,7 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
             em.close();
         } catch(Exception e){
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG, "update(): " + e.getMessage());
         }
     }
 
@@ -74,7 +74,7 @@ private static final String TAG = Controller.class.getSimpleName();
             em.close();
             list = returnedList;
         } catch(Exception e){
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG, "read(): " + e.getMessage());
         }
         return list;
     }
@@ -89,7 +89,7 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
             em.close();
         } catch(Exception e){
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG,"delete(): " +  e.getMessage());
         }
     }
     
@@ -104,7 +104,7 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
         } catch(Exception e) {
             em.getTransaction().rollback();
-            Logging.d(TAG, e.getMessage());
+            Logging.d(TAG, "delete(): " + e.getMessage());
         } finally {
             em.close();
         }

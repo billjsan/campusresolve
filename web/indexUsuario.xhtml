@@ -151,7 +151,15 @@
         </b:form>
 
         <h:form id="formModalDetalhes">
-            <p:dialog header="Detalhes da Ocorrência" widgetVar="modalDetalhes" modal="true" resizable="false" width="500" showEffect="fade" hideEffect="fade" closable="true" draggable="false">
+            <p:dialog header="Detalhes da Ocorrência"
+                      widgetVar="modalDetalhes"
+                      modal="true"
+                      resizable="false"
+                      width="800"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      closable="true"
+                      draggable="false">
                 <b:panelGrid columns="2">
                     <h:outputText value="Identificador:" />
                     <h:outputText value="#{denunciaController.denunciaSelecionada.id}" />
