@@ -1,6 +1,7 @@
 package com.pdsc.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -60,11 +61,8 @@ public class Servidor implements Serializable {
     private String setor;
 
     @NotBlank(message = "Senha não pode estar em branco.")
-    @Size(min = 6, max = 20, message = "A senha deve ter entre 6 e 20 caracteres.")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{6,20}$", 
-             message = "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.")
-    @NotNull
-    @Column(length=20, nullable = false, name = "SENHA_SERVIDOR")
+    
+    @Column(length=300, nullable = false, name = "SENHA_SERVIDOR")
     private String senha;
     
     @NotBlank(message = "A função não pode ser vazia")
@@ -73,7 +71,7 @@ public class Servidor implements Serializable {
     private String funcao = TRIAGEM;
 
     @OneToMany(mappedBy = "servidor", cascade = CascadeType.ALL)
-    private List<Denuncia> denuncias;
+    private List<Denuncia> denuncias = new ArrayList<>();
 
     public String getFuncao() {
         return funcao;
@@ -138,4 +136,11 @@ public class Servidor implements Serializable {
     public void setDenuncias(List<Denuncia> denuncias) {
         this.denuncias = denuncias;
     }
+
+    @Override
+    public String toString() {
+        return "Servidor{" + "id=" + id + ", matricula=" + matricula + ", nome=" + nome + ", cargo=" + cargo + ", setor=" + setor + ", senha=" + senha + ", funcao=" + funcao + ", denuncias=" + denuncias + '}';
+    }
+    
+    
 }

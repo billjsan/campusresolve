@@ -1,6 +1,7 @@
 package com.pdsc.controller;
 
 import com.pdsc.model.Usuario;
+import com.pdsc.util.CriptoHelper;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
@@ -46,17 +47,7 @@ public class UsuarioController extends Controller {
                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro!", "A senha e a confirmação não são iguais!"));
             return;
         }
-
-        // Validar a entidade
-        //Set<ConstraintViolation<Usuario>> violations = validator.validate(usuarioCadastro);
-        //if (!violations.isEmpty()) {
-        //    for (ConstraintViolation<Usuario> violation : violations) {
-        //        FacesContext.getCurrentInstance().addMessage(null,
-        //                new FacesMessage(FacesMessage.SEVERITY_ERROR, violation.getMessage(), null));
-        //    }
-        //    return;
-        //}
-
+        usuarioCadastro.setSenha(CriptoHelper.gerarHash256(confirma));
         insert(usuarioCadastro);
         usuarioCadastro = new Usuario();
         FacesContext.getCurrentInstance().addMessage(null,

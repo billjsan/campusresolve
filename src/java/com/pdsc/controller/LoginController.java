@@ -2,6 +2,7 @@ package com.pdsc.controller;
 
 import com.pdsc.model.Servidor;
 import com.pdsc.model.Usuario;
+import com.pdsc.util.CriptoHelper;
 import com.pdsc.util.Logging;
 import java.io.Serializable;
 import javax.faces.application.FacesMessage;
@@ -39,8 +40,10 @@ public class LoginController extends Controller implements Serializable{
     }
     
     public String loginServidor(String matricula, String senha) {
+        String senhaCriptografada = CriptoHelper.gerarHash256(senha);
+        Logging.d(TAG, "senha cripto:" + senhaCriptografada);
         try {
-            this.servidorLogado  = (Servidor)read("select p from Servidor p" + " where p.matricula = '" + matricula + "' and p.senha = '" + senha+"'", 
+            this.servidorLogado  = (Servidor)read("select p from Servidor p" + " where p.matricula = '" + matricula + "' and p.senha = '" + senhaCriptografada + "'", 
                             Servidor.class).get(0);                        
             return "indexServidor";
         } catch (Exception e) {            
@@ -52,9 +55,10 @@ public class LoginController extends Controller implements Serializable{
     }
     
     public String loginUsuario(String matricula, String senha) {
+        String senhaCriptografada = CriptoHelper.gerarHash256(senha);
         Logging.d(TAG, "loginUsuario");
         try {
-            this.usuarioLogado  = (Usuario)read("select p from Usuario p where p.matricula = '" + matricula + "' and p.senha = '" + senha + "'", 
+            this.usuarioLogado  = (Usuario)read("select p from Usuario p where p.matricula = '" + matricula + "' and p.senha = '" + senhaCriptografada + "'", 
                             Usuario.class).get(0);                        
             return "indexUsuario";
         } catch (Exception e) {   

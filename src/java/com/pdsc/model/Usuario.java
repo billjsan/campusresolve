@@ -1,6 +1,7 @@
 package com.pdsc.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -40,15 +41,12 @@ public class Usuario  implements Serializable {
     private String nome;
 
     @NotBlank(message = "Senha não pode estar em branco.")
-    @Size(min = 6, max = 20, message = "A senha deve ter entre 6 e 20 caracteres.")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$!%*?&])[A-Za-z\\d@#$!%*?&]{6,20}$",
-             message = "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial.")
     @NotNull
-    @Column(length=20, nullable = false, name = "SENHA_USUARIO")
+    @Column(length=300, nullable = false, name = "SENHA_USUARIO")
     private String senha;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Denuncia> denuncias;
+    private List<Denuncia> denuncias = new ArrayList();
 
     
     public int getId() {
@@ -90,4 +88,11 @@ public class Usuario  implements Serializable {
     public void setDenuncias(List<Denuncia> denuncias) {
         this.denuncias = denuncias;
     }
+
+    @Override
+    public String toString() {
+        return "Usuario{" + "id=" + id + ", matricula=" + matricula + ", nome=" + nome + ", senha=" + senha + ", denuncias=" + denuncias + '}';
+    }
+    
+    
 }

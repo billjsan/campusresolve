@@ -26,6 +26,7 @@ private static final String TAG = Controller.class.getSimpleName();
 
     public void insert(Object objectList) {
         try {
+            Logging.d(TAG, "insert(): objeto antes de inserir: " + objectList.toString());
             this.insert(new Object[]{objectList});
         } catch(Exception e){
             Logging.d(TAG, "insert(): " + e.getMessage());
@@ -43,8 +44,9 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
             em.close();
         } catch(Exception e){
-            Logging.d(TAG, "ERROR on=> insert(): " + e.getMessage());
-            throw new Exception();   
+           Logging.d(TAG, "ERROR on=> insert(): " + e.getMessage()); 
+            e.printStackTrace();
+            throw e;  
         }
     }
 
