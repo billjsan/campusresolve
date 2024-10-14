@@ -61,38 +61,45 @@
                          collapsible="false">
                     <b:row styleClass="table-responsive">
                         <p:dataTable styleClass="table table-striped" 
-                                     value="#{denunciaController.listarDenunciasPorUsuario(loginController.usuarioLogado)}" 
+                                     value="#{denunciaController.getDenunciaFiltradas()}" 
                                      var="denuncia"
                                      paginator="true" rows="10" 
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
                                      rowsPerPageTemplate="10,20,30">
                             <p:column headerText="Identificador">
-                                <h:outputText value=" #{denuncia.id} " />
+                                        <h:outputText value=" #{denuncia.id} " 
+                                                       style="display: flex; flex-direction: column; align-items: center;"/>
                             </p:column>
                             <p:column headerText="Tipo">
-                                <h:outputText value=" #{denuncia.tipoDenuncia} " />
+                                <h:outputText value=" #{denuncia.tipoDenuncia} "
+                                               style="display: flex; flex-direction: column; align-items: center;"/>
                             </p:column>
                             <p:column headerText="Assunto">
-                                <h:outputText value=" #{denuncia.assundoDenuncia} " />
+                                <h:outputText value=" #{denuncia.assundoDenuncia} "
+                                               style="display: flex; flex-direction: column; align-items: center;"/>
                             </p:column>
                             <p:column headerText="Descrição">
-                                <h:outputText value="#{denuncia.descricaoCurta}" />
+                                <h:outputText value="#{denuncia.descricaoCurta}"
+                                               style="display: flex; flex-direction: column; align-items: center;"/>
                             </p:column>
                             <p:column headerText="Local">
-                                <h:outputText value=" #{denuncia.localDenuncia} " />
+                                <h:outputText value=" #{denuncia.localDenuncia} "
+                                               style="display: flex; flex-direction: column; align-items: center;"/>
                             </p:column>
                             <p:column headerText="Status">
-                                <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} " />
+                                <h:outputText value=" #{denuncia.estadoDenunciaAmigavel} "
+                                               style="display: flex; flex-direction: column; align-items: center;"/>
                             </p:column>
                             <p:column headerText="Data">
-                                <h:outputText value="#{denuncia.dataDenuncia}">
+                                <h:outputText value="#{denuncia.dataDenuncia}"
+                                              style="display: flex; flex-direction: column; align-items: center;">
                                     <f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
                                 </h:outputText>
                             </p:column>
                             <p:column headerText="Ação">
                                 <b:commandButton value="Detalhes" 
+                                                 style="display: flex; flex-direction: column; align-items: center;"
                                                  styleClass="btn-primary" 
-                                                 style="padding: 5px 10px; font-size: 10px; margin-left: 5px; margin-right: 5px"
                                                  update=":formModalDetalhes" 
                                                  oncomplete="PF('modalDetalhes').show()" 
                                                  process="@this">
@@ -268,7 +275,7 @@
                                                   locale="pt" />
                                 </p:panel>
                             </b:panelGrid>
-                                <p:panel>
+                                <p:panel style="text-align: right;">
                                     <h:outputText value="Descrição da Ocorrência:"
                                               style="font-weight: bold; font-size:16px;"/>
                                     <b:inputTextarea value="#{denunciaController.denunciaSelecionada.descricaoDenuncia}" 
@@ -283,28 +290,35 @@
                                         <p:panel>
                                             <b:inputTextarea value="#{campo.informacao}" 
                                                      style="margin-bottom: 10px; height: 300px;"
-                                                     disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia != 'N'}" 
+                                                     disabled="true" 
                                                      rows="3" 
                                                      maxlength="5000"/>
+                                            <h:outputText value="Adicionado por: #{campo.tipoCriadorAmigavel}"
+                                                style="font-size:14px; margin-right: 10px;"/>
                                             <h:outputText value="Modificado em: #{campo.dataModificacaoFormatada}"
-                                              style="font-size:14px;"/>
+                                                style="font-size:14px;"/>
                                         </p:panel>
-                                    </ui:repeat>
+                                    </ui:repeat> 
+                                    <p:panel rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N' ||
+                                                             denunciaController.denunciaSelecionada.estadoDenuncia == 'I'}" >
+                                        <b:inputTextarea value="#{denunciaController.infoAdicionalNova}" 
+                                                 style="margin-bottom:5px; height: 300px;"
+                                                 rows="3" 
+                                                 maxlength="5000"/>
+                                        <b:commandButton value="Adicionar Informação" 
+                                                         styleClass="btn-primary"
+                                                         action="#{denunciaController.atualizarInfoAdicional()}"/>
+                                    </p:panel>
                                 </p:panel>
                         </b:panelGrid>
                         <b:commandButton value="Salvar" 
-                                         style="float: right;"
+                                         style="float: right; margin-top: 10px; margin-left: 10px"
                                          action="#{denunciaController.atualizarDenuncia()}" 
                                          rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
                         <b:commandButton value="Excluir" 
-                                         style="float: right;"
+                                         style="float: right; margin-top: 10px; margin-left: 10px"
                                          action="#{denunciaController.excluirDenuncia()}" 
                                          rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'N'}" />
-                        <b:commandButton value="Fechar" 
-                                         style="float: right;"
-                                         icon="ui-icon-close" 
-                                         onclick="PF('modalDetalhes').hide()" 
-                                         type="button" />
                     </b:panel>
                 </div>
             </p:dialog>

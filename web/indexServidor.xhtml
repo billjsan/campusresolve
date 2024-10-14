@@ -318,29 +318,19 @@
                                                      disabled="true" 
                                                      rows="3" 
                                                      maxlength="5000"/>
-                                            <h:outputText value="Adicionado por: #{campo.nomeCriador}"
-                                              style="font-size:14px; margin-right: 10px;"/>
+                                            <h:outputText value="Adicionado por: #{campo.tipoCriadorAmigavel}"
+                                                style="font-size:14px; margin-right: 10px;"/>
                                             <h:outputText value="Modificado em: #{campo.dataModificacaoFormatada}"
-                                              style="font-size:14px;"/>
+                                                style="font-size:14px;"/>
                                         </p:panel>
                                     </ui:repeat>
-                                    <p:panel rendered="#{denunciaController.denunciaSelecionada.canAddAditionalInfo()}" >
+                                    <p:panel rendered="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'P'}" >
                                         <b:inputTextarea value="#{denunciaController.infoAdicionalNova}" 
                                                  style="margin-bottom:5px; height: 300px;"
                                                  rows="3" 
-                                                 maxlength="5000"
-                                                 disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'A' ||
-                                                             denunciaController.denunciaSelecionada.estadoDenuncia == 'R' ||
-                                                             denunciaController.denunciaSelecionada.estadoDenuncia == 'N' ||
-                                                             denunciaController.denunciaSelecionada.estadoDenuncia == 'I' ||
-                                                                        denunciaController.denunciaSelecionada.estadoDenuncia == 'E'}"/>
+                                                 maxlength="5000"/>
                                         <b:commandButton value="Adicionar Informação" 
                                                          styleClass="btn-primary"
-                                                         disabled="#{denunciaController.denunciaSelecionada.estadoDenuncia == 'A' ||
-                                                                     denunciaController.denunciaSelecionada.estadoDenuncia == 'R' ||
-                                                                     denunciaController.denunciaSelecionada.estadoDenuncia == 'N' ||
-                                                                     denunciaController.denunciaSelecionada.estadoDenuncia == 'I' ||
-                                                                        denunciaController.denunciaSelecionada.estadoDenuncia == 'E'}"
                                                          action="#{denunciaController.atualizarInfoAdicional()}" />
                                     </p:panel>
                                 </p:panel>

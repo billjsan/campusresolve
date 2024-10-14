@@ -82,12 +82,7 @@ public class DenunciaController extends Controller {
 
     
     
-    public List<Denuncia> getTodasDenunciasUsuario() {
-        Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
-                        .getExternalContext().getSession(true))
-                        .getAttribute("loginController")).getUsuarioLogado();
-            return read("SELECT d FROM Denuncia d WHERE d.usuario.id = " + usuarioLogado.getId(), Denuncia.class);
-    }
+    
     
     private boolean usuarioEstaLogado() {
         Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
@@ -555,6 +550,17 @@ public class DenunciaController extends Controller {
                         .getAttribute("loginController")).getServidorLogado();
         Logging.d(TAG,"getTodasDenunciasServidor: Servidor Logado ID: " + servidorLogado.getId());
         List<Denuncia> denuncias = read("select d from Denuncia d where d.servidor.id = " + servidorLogado.getId(), Denuncia.class);
+        Logging.d(TAG,"denuncias size: " + denuncias.size());
+        return denuncias;
+    }
+    
+    public List<Denuncia> getTodasDenunciasUsuario() {
+        Logging.d(TAG, "getTodasDenunciasUsuario()");
+        Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getUsuarioLogado();
+        Logging.d(TAG,"getTodasDenunciasUsuario: Usuario Logado ID: " + usuarioLogado.getId());
+        List<Denuncia> denuncias = read("SELECT d FROM Denuncia d WHERE d.usuario.id = " + usuarioLogado.getId(), Denuncia.class);
         Logging.d(TAG,"denuncias size: " + denuncias.size());
         return denuncias;
     }

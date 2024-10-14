@@ -33,6 +33,9 @@ public class InformacaoAdicional implements Serializable {
     public static final int USUARIO = 1;
     @Transient
     private String informacaoNova;
+    
+    @Transient
+    private String tipoCriadorAmigavel;
         
     
     @Id
@@ -65,6 +68,18 @@ public class InformacaoAdicional implements Serializable {
     
     @Transient
     private String dataModificacaoFormatada;
+
+    public String getTipoCriadorAmigavel() {
+        if (tipoCriador == SERVIDOR) {
+            return "Servidor";
+        } else {
+            return "Usuário";
+        }
+    }
+
+    public void setTipoCriadorAmigavel(String tipoCriadorAmigavel) {
+        this.tipoCriadorAmigavel = tipoCriadorAmigavel;
+    }
     
 
     public Long getId() {
