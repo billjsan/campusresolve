@@ -1,5 +1,6 @@
 package com.pdsc.model;
 
+import com.pdsc.util.Logging;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,19 +31,21 @@ import javax.validation.constraints.Size;
 public class Denuncia implements Serializable { 
     
     @Transient
-    private final String NOVA = "Novo";
+    private static final String TAG = Denuncia.class.getSimpleName();
     @Transient
-    private final String PROCESSAMENTO = "Em processamento";
+    public static final String NOVA = "Novo";
     @Transient
-    private final String ENCAMINHADO = "encaminhado";
+    public static String PROCESSAMENTO = "Em processamento";
     @Transient
-    private final String RESOLVIDO = "resolvido";
+    public static String ENCAMINHADO = "encaminhado";
     @Transient
-    private final String ARQUIVADO = "Arquivado";
+    public static String RESOLVIDO = "resolvido";
     @Transient
-    private final String AGUARDANDO = "Aguardando informação";
+    public static String ARQUIVADO = "Arquivado";
     @Transient
-    private final String INVALIDO = "Invalido";
+    public static String AGUARDANDO = "Aguardando informação";
+    @Transient
+    public static String INVALIDO = "Invalido";
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -115,8 +118,13 @@ public class Denuncia implements Serializable {
         this.informacoesAdicionais = informacoesAdicionais;
     }
     
-    
-    
+    public boolean canAddAditionalInfo() {
+        return AGUARDANDO.equals(getEstadoDenunciaAmigavel())  || 
+                ENCAMINHADO.equals(getEstadoDenunciaAmigavel())  ||
+                PROCESSAMENTO.equals(getEstadoDenunciaAmigavel())  ||
+                NOVA.equals(getEstadoDenunciaAmigavel());
+    }
+
     public String getDescricaoCurta(){
         if (descricaoDenuncia.length() > 50) {
             return descricaoDenuncia.substring(0, 50) + "...";

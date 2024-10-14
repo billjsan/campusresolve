@@ -3,6 +3,7 @@ package com.pdsc.controller;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import com.pdsc.model.Denuncia;
+import com.pdsc.model.InformacaoAdicional;
 import com.pdsc.model.Servidor;
 import com.pdsc.model.Usuario;
 import com.pdsc.util.Logging;
@@ -15,7 +16,10 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManager;
+
 
 /**
  *
@@ -32,6 +36,9 @@ public class DenunciaController extends Controller {
     private final SimpleDateFormat dataFormatada = new SimpleDateFormat("dd/MM/yyyy HH:mm");
     private Denuncia denunciaSelecionada;
     private String filtroDenuncia;
+    private String infoAdicionalString;
+    private String infoAdicionalNova = "";
+    private String nomeCriadorInfoAdicional = "";
 
     @PostConstruct
     public void init() {
@@ -45,20 +52,137 @@ public class DenunciaController extends Controller {
     public void setDenunciaSelecionada(Denuncia denuncia) {
         denunciaSelecionada = denuncia;
     }
+    
+    public void atualizarStatusDenuncia() {
+        try {
+            update(denunciaSelecionada);
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em atualizarStatusDenuncia() " + e.getMessage());
+        }
+    }
 
-    public void setFiltroDenuncia(String filtro) {
-        filtroDenuncia = filtro;
+    public String getInfoAdicionalNova() {
+        return infoAdicionalNova;
+    }
+
+    public String getNomeCriadorInfoAdicional() {
+        return nomeCriadorInfoAdicional;
+    }
+
+    public void setNomeCriadorInfoAdicional(String nomeCriadorInfoAdicional) {
+        this.nomeCriadorInfoAdicional = nomeCriadorInfoAdicional;
+    }
+
+    public void setInfoAdicionalNova(String infoAdicionalNova) {
+        this.infoAdicionalNova = infoAdicionalNova;
+    }
+
+    
+    
+
+    
+    
+    public List<Denuncia> getTodasDenunciasUsuario() {
+        Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getUsuarioLogado();
+            return read("SELECT d FROM Denuncia d WHERE d.usuario.id = " + usuarioLogado.getId(), Denuncia.class);
     }
     
-    public String getFiltroDenuncia() {
-        return filtroDenuncia;
+    private boolean usuarioEstaLogado() {
+        Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                            .getExternalContext().getSession(true))
+                            .getAttribute("loginController")).getUsuarioLogado();
+                                    return usuarioLogado!= null;
+    
+    }
+    
+    private boolean servidorEstaLogado() {
+        Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getServidorLogado();
+         return servidorLogado!= null;
+    }
+    
+    public void atualizarInfoAdicional() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        if(denunciaSelecionada == null || infoAdicionalNova == null || infoAdicionalNova.isEmpty()) {
+            Logging.d(TAG, "erro em atualizarInfoAdicional() ");
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "erro ao atualizarInfoAdicional"));
+                return ;
+        }
+
+        try {
+            Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getUsuarioLogado();
+
+            Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getServidorLogado();
+            
+            if (usuarioLogado == null && servidorLogado == null) {
+                Logging.d(TAG, "erro nenhum usuario ou servidor logado foi encontrado");
+                return;
+            }
+            
+            InformacaoAdicional info = new InformacaoAdicional();
+            if(usuarioLogado != null) {
+                Logging.d(TAG, "usuario logado encontrado");
+                info.setIdCriador(usuarioLogado.getId());
+                info.setTipoCriador(InformacaoAdicional.USUARIO);
+                info.setNomeCriador(usuarioLogado.getNome());
+                
+            } else {
+                Logging.d(TAG, "servidor logado encontrado");
+                info.setIdCriador(servidorLogado.getId());
+                info.setTipoCriador(InformacaoAdicional.SERVIDOR);
+                info.setNomeCriador(servidorLogado.getNome());
+            } 
+            info.setInformacao(infoAdicionalNova);
+            info.setDenuncia(denunciaSelecionada);
+            infoAdicionalNova = "";
+            denunciaSelecionada.getInformacoesAdicionais().add(info);
+            update(denunciaSelecionada);
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em inserirInfoAdicional() " + e.getMessage());
+        }
     }
 
-    public List<Denuncia> getDenunciaFiltradas() {
-        if (filtroDenuncia == null || filtroDenuncia.isEmpty()) {
-            return getTodasDenuncias();
-        } else {
-            return getDenunciasPorTipo(filtroDenuncia);
+    public void inserirInfoAdicional() {
+        Logging.d(TAG, "inserirInfoAdicional()");
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getUsuarioLogado();
+
+            Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getServidorLogado();
+            
+            if (usuarioLogado == null && servidorLogado == null) {
+                Logging.d(TAG, "erro nenhum usuario ou servidor logado foi encontrado");
+                return;
+            }
+            
+            InformacaoAdicional info = new InformacaoAdicional();
+            if(usuarioLogado != null) {
+                Logging.d(TAG, "usuario logado encontrado");
+                info.setIdCriador(usuarioLogado.getId());
+                info.setTipoCriador(InformacaoAdicional.USUARIO);
+                
+            } else {
+                Logging.d(TAG, "servidor logado encontrado");
+                info.setIdCriador(servidorLogado.getId());
+                info.setTipoCriador(InformacaoAdicional.SERVIDOR);
+            } 
+            info.setInformacao(infoAdicionalString);
+            denunciaSelecionada.getInformacoesAdicionais().add(info);
+            update(denunciaSelecionada);
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em inserirInfoAdicional() " + e.getMessage());
         }
     }
 
@@ -167,19 +291,7 @@ public class DenunciaController extends Controller {
         return isValid;
     }
 
-    public List<Denuncia> getDenunciasPorTipo(String tipo) {
-        List<Denuncia> result = new ArrayList();
-        try {
-            EntityManager em = emf.createEntityManager();
-            result = em.createQuery("SELECT d FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia", Denuncia.class)
-                   .setParameter("tipoDenuncia", tipo)
-                   .getResultList();
-                    em.close();
-        } catch (Exception e) {
-            Logging.d(TAG, "erro em filtrarDenuncias() " + e.getMessage());
-        }
-        return result;
-    }
+    
     
     private Servidor getServidorResponsavel() {
         EntityManager em = emf.createEntityManager();
@@ -214,23 +326,7 @@ public class DenunciaController extends Controller {
         }
     }
 
-    public String getQuantidadeOcorrenciaPorTipoString(String tipo) {
-        String result = "0";
-        try {
-            if ("todas".equals(tipo)) {
-                return String.valueOf(getTodasDenuncias().size());
-            }
-            EntityManager em = emf.createEntityManager();
-            Long count = (Long) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia")
-                    .setParameter("tipoDenuncia", tipo)
-                    .getSingleResult();
-            em.close();
-            result = count.toString();
-        } catch (Exception e) {
-            Logging.d(TAG, "erro em getNumeroDenunciaPorTipoString() " + e.getMessage());
-        }
-        return result;
-    }
+    
 
     private boolean dataDenunciaEValida(Date data, FacesContext context) {
         Date dataAtual = new Date();
@@ -304,13 +400,10 @@ public class DenunciaController extends Controller {
     }
 
     public List<Denuncia> listarDenunciasPorUsuario(Usuario usuario) {
-        return read("select d from Denuncia d where d.usuario.id = " + usuario.getId(), Denuncia.class);
+        return read("select d from Denuncia d where d.usuario.id = " + usuario.getId(), Denuncia.class); // PARECE QUE TEM UM ERRO AQUI
     }
 
-    public List<Denuncia> getTodasDenuncias() {
-        return read("select d from Denuncia d ", Denuncia.class);
-    }
-
+    
     public String formatarData(Date data) {
         return dataFormatada.format(data);
     }
@@ -341,7 +434,11 @@ public class DenunciaController extends Controller {
 
     public void atualizarDenuncia() {
         if (denunciaSelecionada != null) {
-            update(denunciaSelecionada);
+            try {
+                update(denunciaSelecionada);
+            } catch (Exception ex) {
+               Logging.d(TAG, "atualizarDenuncia() erro");
+            }
         }
     }
 
@@ -349,5 +446,182 @@ public class DenunciaController extends Controller {
         if (denunciaSelecionada != null) {
             delete(denunciaSelecionada);
         }
+    }
+    
+    public List<Denuncia> getTodasDenunciasParaClienteLogado() {
+        Logging.d(TAG, "getTodasDenunciasParaClienteLogado");
+        EntityManager em = emf.createEntityManager();
+        List<Denuncia> result = new ArrayList();
+        try {
+            if(servidorEstaLogado()) {
+                Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getServidorLogado();
+                
+                Servidor servidorDoBanco = (Servidor) read("select d from Servidor d where d.id = " + servidorLogado.getId(), Denuncia.class).get(0);
+                if(servidorDoBanco != null) {
+                    Logging.d(TAG, "servidorDoBanco: nome:" + servidorDoBanco.getNome() + " ID: " + servidorDoBanco.getId()  + " quantidade Denuncias: " + servidorDoBanco.getDenuncias().size());
+                    result = servidorDoBanco.getDenuncias();
+                }
+            } else if(usuarioEstaLogado()) {
+                Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getUsuarioLogado();
+                Logging.d(TAG, "usuarioLogado: nome:" + usuarioLogado.getNome() + " ID: " + usuarioLogado.getId()  + " quantidade Denuncias: " + usuarioLogado.getDenuncias().size());
+                result = usuarioLogado.getDenuncias();
+            }
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em getNumeroDenunciaPorTipoString() " + e.getMessage());
+        } finally{
+            em.close();  
+        }
+        return result;
+    }
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     * @param tipo
+     * @return 
+     */
+    public String getQuantidadeOcorrenciaPorTipoString(String tipo) {
+        Logging.d(TAG, "getQuantidadeOcorrenciaPorTipoString(): tipo:" + tipo);
+        String result = "0";
+        try {
+            if ("todas".equals(tipo)) {
+                Logging.d(TAG, "tipo = todas");
+                return String.valueOf(getTodasDenuncias().size());
+            }
+            EntityManager em = emf.createEntityManager();
+            Long count = 0L;
+            if(servidorEstaLogado()) {
+                Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getServidorLogado();
+                count = (Long) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia AND d.servidor.id =:idServidor")
+                        .setParameter("tipoDenuncia", tipo)
+                        .setParameter("idServidor", servidorLogado.getId())
+                        .getSingleResult();
+                Logging.d(TAG, "servidorEstaLogado() denuncias filtradas:" + count);
+            
+            } else if(usuarioEstaLogado()) {
+                Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getUsuarioLogado();
+                count = (Long) em.createQuery("SELECT COUNT(d) FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia AND d.usuario.id =:idUsuario")
+                            .setParameter("tipoDenuncia", tipo)
+                            .setParameter("idUsuario", usuarioLogado.getId())
+                            .getSingleResult();
+                 Logging.d(TAG, "usuarioEstaLogado() denuncias filtradas:" + count);
+            }
+            em.close();
+            result = count.toString();
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em getNumeroDenunciaPorTipoString() " + e.getMessage());
+        }
+        return result;
+    }
+    
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     * @return 
+     */
+    public List<Denuncia> getTodasDenuncias() {
+        Logging.d(TAG, "getTodasDenuncias()");
+        if(servidorEstaLogado()) {
+            Logging.d(TAG, "servidorEstaLogado()");
+            return getTodasDenunciasServidor();
+        } else if(usuarioEstaLogado()) {
+            Logging.d(TAG, "usuarioEstaLogado()");
+            return getTodasDenunciasUsuario();
+        }
+        return new ArrayList();
+    }
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     * @return 
+     */
+    public List<Denuncia> getTodasDenunciasServidor() {
+        Logging.d(TAG, "getTodasDenunciasServidor()");
+        Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true))
+                        .getAttribute("loginController")).getServidorLogado();
+        Logging.d(TAG,"getTodasDenunciasServidor: Servidor Logado ID: " + servidorLogado.getId());
+        List<Denuncia> denuncias = read("select d from Denuncia d where d.servidor.id = " + servidorLogado.getId(), Denuncia.class);
+        Logging.d(TAG,"denuncias size: " + denuncias.size());
+        return denuncias;
+    }
+    
+   /**
+    * 
+    * FUNCIONA COMO ESPERADO
+    * 
+    * @param filtro 
+    */
+    public void setFiltroDenuncia(String filtro) {
+        Logging.d(TAG, "setFiltroDenuncia(): filtro:" + filtro);
+        filtroDenuncia = filtro;
+    }
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     * @return 
+     */
+    public String getFiltroDenuncia() {
+        Logging.d(TAG, "getFiltroDenuncia(): filtro:" + filtroDenuncia);
+        return filtroDenuncia;
+    }
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     * @return 
+     */
+    public List<Denuncia> getDenunciaFiltradas() {
+        Logging.d(TAG, "getDenunciaFiltradas()");
+        if (filtroDenuncia == null || filtroDenuncia.isEmpty()) {
+            Logging.d(TAG, "filtroDenuncia == null || filtroDenuncia.isEmpty()");
+            return getTodasDenuncias();
+        } 
+        return getDenunciasPorTipo(filtroDenuncia);
+    }
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     * @param tipo
+     * @return 
+     */
+    public List<Denuncia> getDenunciasPorTipo(String tipo) {
+        Logging.d(TAG, "getDenunciasPorTipo: tipo:" + tipo);
+        List<Denuncia> result = new ArrayList();
+        EntityManager em = emf.createEntityManager();
+        try {
+            Servidor servidorLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
+                              .getExternalContext().getSession(true))
+                              .getAttribute("loginController")).getServidorLogado();
+            Logging.d(TAG, "servidorLogado: " + servidorLogado.getNome() + "  ID: " + servidorLogado.getId());
+            result = (List<Denuncia>) em.createQuery("SELECT d FROM Denuncia d WHERE d.tipoDenuncia = :tipoDenuncia AND d.servidor.id =:idServidor")
+                .setParameter("tipoDenuncia", tipo)
+                .setParameter("idServidor", servidorLogado.getId())
+                .getResultList();
+            Logging.d(TAG, "Lista Denuncias size: " + result.size());
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em filtrarDenuncias() " + e.getMessage());
+        } finally{
+            em.close();
+        }
+        return result;
     }
 }

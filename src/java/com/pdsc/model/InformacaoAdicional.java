@@ -27,13 +27,24 @@ public class InformacaoAdicional implements Serializable {
     @Transient
     private static final String TAG = InformacaoAdicional.class.getSimpleName(); 
     
+    @Transient
+    public static final int SERVIDOR = 0;
+    @Transient
+    public static final int USUARIO = 1;
+    @Transient
+    private String informacaoNova;
+        
+    
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "ID_INFORMACAO_ADICIONAL")
     private Long Id;
     
     @Column(length=5500, nullable = false, name = "INFORMACAO_ADICIONAL")
-    private String informacao;
+    private String informacao = "";
+    
+    @Column(length=5500, nullable = false, name = "NOME_CRIADOR_INFORMACAO_ADICIONAL")
+    private String nomeCriador;
     
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
@@ -44,13 +55,58 @@ public class InformacaoAdicional implements Serializable {
     @JoinColumn(name = "DENUNCIA_ID", nullable = false)
     private Denuncia denuncia;
     
+    @NotNull
+    @Column(nullable = false, name = "ID_CRIADOR_INFORMACAO_ADICIONAL")
+    private int idCriador;
+    
+    @NotNull
+    @Column(nullable = false, name = "TIPO_CRIADOR_INFORMACAO_ADICIONAL")
+    private int tipoCriador;
+    
     @Transient
     private String dataModificacaoFormatada;
+    
 
     public Long getId() {
         return Id;
     }
 
+    public String getInformacaoNova() {
+        return informacaoNova;
+    }
+
+    public String getNomeCriador() {
+        return nomeCriador;
+    }
+
+    public void setNomeCriador(String nomeCriador) {
+        this.nomeCriador = nomeCriador;
+    }
+
+    
+    public void setInformacaoNova(String informacaoNova) {
+        this.informacaoNova = informacaoNova;
+    }
+
+    public int getIdCriador() {
+        return idCriador;
+    }
+
+    public int getTipoCriador() {
+        return tipoCriador;
+    }
+
+    public void setTipoCriador(int tipoCriador) {
+        this.tipoCriador = tipoCriador;
+    }
+
+    
+    public void setIdCriador(int idCriador) {
+        this.idCriador = idCriador;
+    }
+
+    
+    
     public Date getDataModificacao() {
         return dataModificacao;
     }

@@ -3,9 +3,12 @@ package com.pdsc.controller;
 import com.pdsc.model.Denuncia;
 import com.pdsc.util.Logging;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
+import static org.eclipse.persistence.config.ResultType.Map;
 
 /**
  *
@@ -29,7 +32,7 @@ private static final String TAG = Controller.class.getSimpleName();
         }
     }
 
-    public void insert(Object[] objectList) {
+    public void insert(Object[] objectList) throws Exception {
         try {
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
@@ -40,19 +43,21 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
             em.close();
         } catch(Exception e){
-            Logging.d(TAG, "insert(): " + e.getMessage());
+            Logging.d(TAG, "ERROR on=> insert(): " + e.getMessage());
+            throw new Exception();   
         }
     }
 
-    public void update(Object objectList) {
+    public void update(Object objectList) throws Exception {
         try {
             this.update(new Object[]{objectList});
         } catch(Exception e){
-            Logging.d(TAG, "update(): " + e.getMessage());
+            Logging.d(TAG, "ERROR on=> update(): " + e.getMessage());
+            throw new Exception(); 
         }
     }
 
-    public void update(Object[] objectList) {
+    public void update(Object[] objectList) throws Exception {
         try {
             EntityManager em = emf.createEntityManager();
             em.getTransaction().begin();
@@ -62,7 +67,8 @@ private static final String TAG = Controller.class.getSimpleName();
             em.getTransaction().commit();
             em.close();
         } catch(Exception e){
-            Logging.d(TAG, "update(): " + e.getMessage());
+            Logging.d(TAG, "ERROR on=> update(): " + e.getMessage());
+            throw new Exception();   
         }
     }
 
@@ -78,6 +84,27 @@ private static final String TAG = Controller.class.getSimpleName();
         }
         return list;
     }
+    
+    public <T> List<T> read(String query, Class<T> c, Map<String, Integer> parameters) {
+        List<T> list = null;
+        EntityManager em = null;
+        try {
+            em = emf.createEntityManager();
+            TypedQuery<T> typedQuery = em.createQuery(query, c);
+            if (parameters != null) {
+                parameters.forEach(typedQuery::setParameter);
+            }
+            list = typedQuery.getResultList();
+        } catch (Exception e) {
+            Logging.d(TAG, "read(): " + e.getMessage());
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    
+    return list;
+}
 
     public void delete(Object[] objectList) {
         try {
