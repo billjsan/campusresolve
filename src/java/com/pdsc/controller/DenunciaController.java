@@ -16,8 +16,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.persistence.EntityManager;
 
 
@@ -52,14 +50,6 @@ public class DenunciaController extends Controller {
     public void setDenunciaSelecionada(Denuncia denuncia) {
         denunciaSelecionada = denuncia;
     }
-    
-    public void atualizarStatusDenuncia() {
-        try {
-            update(denunciaSelecionada);
-        } catch (Exception e) {
-            Logging.d(TAG, "erro em atualizarStatusDenuncia() " + e.getMessage());
-        }
-    }
 
     public String getInfoAdicionalNova() {
         return infoAdicionalNova;
@@ -77,13 +67,7 @@ public class DenunciaController extends Controller {
         this.infoAdicionalNova = infoAdicionalNova;
     }
 
-    
-    
 
-    
-    
-    
-    
     private boolean usuarioEstaLogado() {
         Usuario usuarioLogado = ((LoginController) ((HttpSession) FacesContext.getCurrentInstance()
                             .getExternalContext().getSession(true))
@@ -288,39 +272,7 @@ public class DenunciaController extends Controller {
 
     
     
-    private Servidor getServidorResponsavel() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            List<Servidor> servidores = (List<Servidor>) em.createQuery("SELECT s FROM Servidor s").getResultList();
-            if(servidores == null || servidores.isEmpty()) {
-                Logging.d(TAG, "nenhum servidor encontrado");
-                return null;
-            }
-            List<Servidor> servidoresTriagem = new ArrayList<>();
-            servidores.stream().filter((s) -> (s.getFuncao().equals(Servidor.TRIAGEM))).forEachOrdered((s) -> {
-                servidoresTriagem.add(s);
-            });
-            
-            if(servidoresTriagem.isEmpty()) {
-                Logging.d(TAG, "nenhum servidor responsavel encontrado");
-                return null;
-            }
-            Servidor servidorResponsavel = servidoresTriagem.get(0);
-            for(Servidor r: servidoresTriagem) {
-                if(r.getDenuncias().size() < servidorResponsavel.getDenuncias().size()) {
-                    servidorResponsavel = r;
-                    return servidorResponsavel;
-                }            
-            }
-            return servidorResponsavel;
-        } catch (Exception e) {
-            Logging.d(TAG, "erro ao pegar servidor responsavel " + e.getMessage());
-            return null;
-        } finally {
-            em.close();
-        }
-    }
-
+    
     
 
     private boolean dataDenunciaEValida(Date data, FacesContext context) {
@@ -630,4 +582,106 @@ public class DenunciaController extends Controller {
         }
         return result;
     }
+    
+    /**
+     * 
+     * FUNCIONA COMO ESPERADO
+     * 
+     */
+    public void atualizarStatusDenuncia() {
+        Logging.d(TAG, "atualizarStatusDenuncia()");
+        try {
+            if(Denuncia.ENCAMINHADO.equals(denunciaSelecionada.getEstadoDenunciaAmigavel())){
+                Logging.d(TAG, "tentando encaminhar denuncia");
+                Servidor supervisor= getSupervisorResponsavel();
+                if(supervisor != null) {
+                   Logging.d(TAG, "achou supervisor responsavel");
+                   denunciaSelecionada.setServidor(supervisor);
+                   update(denunciaSelecionada);
+                } else {
+                    Logging.d(TAG, "não achou supervisor responsavel. valor nao será atualizado");   
+                }
+            }  else {
+                update(denunciaSelecionada);
+            } 
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em atualizarStatusDenuncia() " + e.getMessage());
+        }
+    }
+    
+    /**
+     * 
+     * @return um Supervisor responsável ou @Null se nhão houver nenhum no banco.
+     * balanceia a carga de denuncias pela quantidade de supervisores cadastrados
+     */
+    private Servidor getSupervisorResponsavel() {
+        EntityManager em = emf.createEntityManager();
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            List<Servidor> supervisores = (List<Servidor>)
+                   em.createQuery("SELECT d FROM Servidor d WHERE d.funcao = :funcaoServidor")
+                           .setParameter("funcaoServidor", Servidor.SUPERVISOR)
+                           .getResultList();
+            
+            if(supervisores == null || supervisores.isEmpty()) {
+                           Logging.d(TAG, "nenhum servidor responsavel encontrado");
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "nenhum supervisor responsavel encontrado"));
+                Logging.d(TAG, "nenhum supervisor responsavel encontrado");
+                return null;
+            }
+            
+            Servidor supervisorResponsavel = supervisores.get(0);
+            for(Servidor r: supervisores) {
+                if(r.getDenuncias().size() < supervisorResponsavel.getDenuncias().size()) {
+                    supervisorResponsavel = r;
+                    return supervisorResponsavel;
+                }            
+            }
+            return supervisorResponsavel;
+        } catch (Exception e) {
+            Logging.d(TAG, "erro em atualizarStatusDenuncia() " + e.getMessage());
+        } finally {
+            
+            em.close();
+        }
+        return null;
+    }
+    
+    private Servidor getServidorResponsavel() {
+        EntityManager em = emf.createEntityManager();
+        FacesContext context = FacesContext.getCurrentInstance();
+        try {
+            List<Servidor> servidores = (List<Servidor>) em.createQuery("SELECT s FROM Servidor s").getResultList();
+            if(servidores == null || servidores.isEmpty()) {
+                Logging.d(TAG, "nenhum servidor encontrado");
+                return null;
+            }
+            List<Servidor> servidoresTriagem = new ArrayList<>();
+            servidores.stream().filter((s) -> (s.getFuncao().equals(Servidor.TRIAGEM))).forEachOrdered((s) -> {
+                servidoresTriagem.add(s);
+            });
+            
+            if(servidoresTriagem.isEmpty()) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Erro", "nenhum servidor responsavel encontrado"));
+                Logging.d(TAG, "nenhum servidor responsavel encontrado");
+                return null;
+            }
+            Servidor servidorResponsavel = servidoresTriagem.get(0);
+            for(Servidor r: servidoresTriagem) {
+                if(r.getDenuncias().size() < servidorResponsavel.getDenuncias().size()) {
+                    servidorResponsavel = r;
+                    return servidorResponsavel;
+                }            
+            }
+            return servidorResponsavel;
+        } catch (Exception e) {
+            Logging.d(TAG, "erro ao pegar servidor responsavel " + e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
 }
