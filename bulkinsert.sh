@@ -9,6 +9,7 @@ DB_PASS="ifpe"
 MATRICULA="90909090"
 NOME="Usuário Builk Insert"
 SENHA="3pShjd45Lw#"
+HASH_SENHA=$(echo -n "$SENHA" | sha256sum | awk '{print $1}')
 
 
 # Dados do Servidor
@@ -18,9 +19,10 @@ SENHA_SERVIDOR="5Ojsh#rtlss3"
 CARGO="Servidor Teste - Triagem"
 SETOR="TI Teste"
 FUNCAO="Triagem"
+HASH_SENHA_SERVIDOR=$(echo -n "$SENHA_SERVIDOR" | sha256sum | awk '{print $1}')
 
-# Inserir novo usuário
-insert_user_query="INSERT INTO USUARIO (MATRICULA_USUARIO, NOME_USUARIO, SENHA_USUARIO) VALUES ('$MATRICULA', '$NOME', '$SENHA');"
+# Inserir novo usuárioinsert_user_query="INSERT INTO USUARIO (MATRICULA_USUARIO, NOME_USUARIO, SE
+insert_user_query="INSERT INTO USUARIO (MATRICULA_USUARIO, NOME_USUARIO, SENHA_USUARIO) VALUES ('$MATRICULA', '$NOME', '$HASH_SENHA');"
 
 # Executa a inserção do usuário e captura o ID gerado
 user_id=$(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -se "$insert_user_query; SELECT LAST_INSERT_ID();")
@@ -33,7 +35,9 @@ fi
 echo "Usuário inserido com sucesso. ID do usuário: $user_id"
 
 # Inserir novo Servidor
-insert_servidor_query="INSERT INTO SERVIDOR (CARGO_SERVIDOR, FUNCAO_SERVIDOR, MATRICULA_SERVIDOR, NOME_SERVIDOR, SENHA_SERVIDOR, SETOR_SERVIDOR) VALUES ('$CARGO', '$FUNCAO', '$MATRICULA_SERVIDOR', '$NOME_SERVIDOR', '$SENHA_SERVIDOR', '$SETOR');"
+insert_servidor_query="INSERT INTO SERVIDOR (CARGO_SERVIDOR, FUNCAO_SERVIDOR, MATRICULA_SERVIDOR, NOME_SERVIDOR, SENHA_SERVIDOR, SETOR_SERVIDOR) VALUES ('$CARGO', '$FUNCAO', '$MATRICULA_SERVIDOR', '$NOME_SERVIDOR', '$HASH_SENHA_SERVIDOR', '$SETOR')"
+
+
 # Executa a inserção do servidor e captura o ID gerado
 servidor_id=$(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -se "$insert_servidor_query; SELECT LAST_INSERT_ID();")
 
@@ -41,6 +45,28 @@ if [ -z "$servidor_id" ]; then
     echo "Erro ao inserir o servidor."
     exit 1
 fi
+
+echo "Servidor inserido com sucesso. ID do servidor: $servidor_id"
+
+MATRICULA_SUPERFISOR="818181"
+NOME_SUPERVISOR="Supervisor Builk Insert"
+SENHA_SUPERVISOR="5Ojsh#rddddds3"
+CARGO_SUPERVISOR="Supervisor  Teste - Supervisor"
+SETOR_SUPERVISOR="TI Teste"
+FUNCAO_SUPERVISOR="Supervisor"
+HASH_SENHA_SERVIDOR_SUPERVISOR=$(echo -n "$SENHA_SUPERVISOR" | sha256sum | awk '{print $1}')
+
+insert_supervisor_query="INSERT INTO SERVIDOR (CARGO_SERVIDOR, FUNCAO_SERVIDOR, MATRICULA_SERVIDOR, NOME_SERVIDOR, SENHA_SERVIDOR, SETOR_SERVIDOR) VALUES ('$CARGO_SUPERVISOR', '$FUNCAO_SUPERVISOR', '$MATRICULA_SUPERFISOR', '$NOME_SUPERVISOR', '$HASH_SENHA_SERVIDOR_SUPERVISOR', '$SETOR_SUPERVISOR');"
+
+# Executa a inserção do usuário e captura o ID gerado
+supervisor_id=$(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -se "$insert_supervisor_query; SELECT LAST_INSERT_ID();")
+
+if [ -z "$supervisor_id" ]; then
+	echo "Erro ao inserir o servidor."
+	exit 1
+fi
+
+echo "Supervisor inserido com sucesso. ID do supervisor: $supervisor_id"
 
 ASSEDIO="Gostaria de registrar uma denúncia de assédio moral que sofri durante o período de estágio na universidade. O supervisor do laboratório constantemente me expunha a situações humilhantes e desnecessárias diante dos meus colegas. Além de questionar publicamente minha competência em tarefas simples, ele também fazia comentários depreciativos sobre minha aparência e minhas habilidades. Essas situações ocorreram repetidamente, causando grande desconforto e afetando meu desempenho. Espero que medidas sejam tomadas para que outros alunos não passem pela mesma situação e que a instituição promova um ambiente de trabalho mais respeitoso e acolhedor"
 AGRADECIMENTO="Venho por meio deste canal expressar meu sincero agradecimento ao setor de atendimento estudantil e aos professores do curso de Engenharia. Durante o semestre passado, passei por um período difícil devido a questões pessoais, e a equipe foi extremamente compreensiva. Eles me orientaram quanto às possibilidades de flexibilização das atividades acadêmicas e me ofereceram apoio psicológico. Sem essa ajuda, provavelmente teria desistido de continuar meus estudos. Gostaria de parabenizar a universidade por incentivar essa cultura de empatia e comprometimento com o bem-estar dos alunos."
@@ -171,3 +197,4 @@ echo "100 informações extras inseridas com sucesso."
 
 echo "Usuario: Matricula:$MATRICULA Senha:$SENHA"
 echo "Servidor: Matricula:$MATRICULA_SERVIDOR Senha:$SENHA_SERVIDOR"
+echo "Supervisor: Matricula: $MATRICULA_SUPERFISOR Senha:$SENHA_SUPERVISOR"
