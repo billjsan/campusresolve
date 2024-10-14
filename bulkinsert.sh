@@ -123,23 +123,45 @@ A ocorrência será acompanhada de perto nas próximas semanas para garantir que
 Estamos à disposição para fornecer mais detalhes, caso necessário, e aguardamos orientações adicionais quanto aos próximos passos. Uma comunicação oficial será emitida assim que todas as informações forem analisadas e consolidadas. Contamos com a colaboração de todos para resolver esta situação da melhor maneira possível e para garantir que erros semelhantes não ocorram novamente no futuro."
 
 declare -a infos=("$INFO1" "$INFO2" "$INFO3" "$INFO4" "$INFO5")
+declare -a tipos_criador=(0 1)
 
 query_get_ids="SELECT ID FROM DENUNCIA LIMIT 30;"
+
 mapfile -t denuncia_ids < <(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -N -e "$query_get_ids")
+
 if [ ${#denuncia_ids[@]} -lt 30 ]; then
 	echo "Erro: Menos de 30 IDs encontrados na tabela DENUNCIA."
 	exit 1
 fi
 
+query_get_ids_criadores_info_adicional_servidor="SELECT d.SERVIDOR_ID FROM DENUNCIA d JOIN SERVIDOR s ON d.SERVIDOR_ID = s.ID_SERVIDOR WHERE d.SERVIDOR_ID IS NOT NULL AND s.FUNCAO_SERVIDOR = 'Triagem' LIMIT 2;"
+query_get_ids_criadores_info_adicional_usuario="SELECT USUARIO_ID FROM DENUNCIA WHERE USUARIO_ID IS NOT NULL LIMIT 30;"
+
+mapfile -t ciradores_info_extra_servidor_ids < <(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -N -e "$query_get_ids_criadores_info_adicional_servidor")
+mapfile -t criadores_info_extra_usuario_ids < <(mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -N -e "$query_get_ids_criadores_info_adicional_usuario")
+
+if [ ${#ciradores_info_extra_servidor_ids[@]} -eq 0 ] || [ ${#criadores_info_extra_usuario_ids[@]} -eq 0 ]; then
+	echo "Erro: Não foram encontrados IDs suficientes de servidores ou usuários."
+	exit 1
+fi
 
 # Inserir 100 informacoes dicionais as denúncias
 for i in {1..100}
 do
     data_modificacao=$(date +'%Y-%m-%d %H:%M:%S')
     id_denuncia=${denuncia_ids[$((i % ${#denuncia_ids[@]}))]}
-    info_adicional=${infos[$((i % 5))]}
-    
-    insert_info_query="INSERT INTO INFORMACAOADICIONAL (DATA_MODIFICACAO_INFORMACAO_ADICIONAL, INFORMACAO_ADICIONAL, DENUNCIA_ID) VALUES ('$data_modificacao', '$info_adicional', '$id_denuncia');"
+    info_adicional=${infos[$((i % ${#infos[@]}))]}
+
+    tipos_criador_denuncia=${tipos_criador[$((i % 2))]}
+    if [ "$tipos_criador_denuncia" -eq 0 ]; then
+	    id_criador_denuncia=${ciradores_info_extra_servidor_ids[$((i % ${#ciradores_info_extra_servidor_ids[@]}))]}
+	    nome_criador_info_adicional=$NOME_SERVIDOR
+    else
+	    id_criador_denuncia=${criadores_info_extra_usuario_ids[$((i % ${#criadores_info_extra_usuario_ids[@]}))]}
+	    nome_criador_info_adicional=$NOME
+    fi
+
+    insert_info_query="INSERT INTO INFORMACAOADICIONAL (DATA_MODIFICACAO_INFORMACAO_ADICIONAL, INFORMACAO_ADICIONAL, DENUNCIA_ID, TIPO_CRIADOR_INFORMACAO_ADICIONAL, ID_CRIADOR_INFORMACAO_ADICIONAL, NOME_CRIADOR_INFORMACAO_ADICIONAL) VALUES ('$data_modificacao', '$info_adicional', '$id_denuncia', '$tipos_criador_denuncia', '$id_criador_denuncia', '$nome_criador_info_adicional');"
 
     # Executa a inserção das infos
     mysql -u$DB_USER -p$DB_PASS -D$DB_NAME -e "$insert_info_query"
